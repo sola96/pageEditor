@@ -1,0 +1,21 @@
+$color-theme: #409eff;
+
+$color-success: #67c23a;
+
+$color-warn: #e6a23c;
+
+$color-error: #f56c6c;
+
+$color-text: #606266;
+
+$color-text-l: #909399;
+
+$color-line: #dcdfe6;
+
+$color-line-l: #e4e7ed;
+
+@mixin no-wrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
