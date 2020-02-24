@@ -5,43 +5,40 @@
         <li class="tab-item" :class="{active:current==='edit'}" @click="current='edit'">编辑活动</li>
         <li class="tab-item" :class="{active:current==='push'}" @click="current='push'">发布活动</li>
       </ul>
-      <div class="components">
-        <ul>
-          <li>图片</li>
-          <li>富文本</li>
-          <li>视频</li>
-          <li>表单</li>
-          <li>按钮</li>
-        </ul>
+      <div class="main">
+        <add-components @selectItem="addComponents"></add-components>
       </div>
       <div class="control">
         <div class="full-screen">
-          <el-switch v-model="fullScreen" active-color="#409eff" inactive-color="#C0CCDA"></el-switch>
-          全屏
+          <el-switch v-model="fullScreen" active-color="#409eff" inactive-color="#C0CCDA"></el-switch>全屏
         </div>
       </div>
     </div>
-    <div class="component-view">
-      <keep-alive>
-        <component :is="current"></component>
-      </keep-alive>
+    <div class="editor-content">
+      <component-edit ref="edit"></component-edit>
     </div>
   </div>
 </template>
 
 <script>
-import edit from "./edit/index";
-import push from "./push/index";
+import componentEdit from "./edit/index";
+import addComponents from "./tab/addComponents/addComponents";
 export default {
   components: {
-    edit,
-    push
+    componentEdit,
+    addComponents
   },
   data() {
     return {
-      current: "edit",
-      fullScreen: false
+      current: "edit", //当前
+      fullScreen: false //是否全屏
     };
+  },
+  methods: {
+    //添加components
+    addComponents(data) {
+      this.$refs.edit.addComponents(data);
+    }
   },
   watch: {
     fullScreen(newVal) {
@@ -88,7 +85,7 @@ export default {
     background-color: rgb(0, 18, 53);
     .tab {
       height: 100%;
-      width: 20%;
+      width: 200px;
       box-sizing: border-box;
       padding-left: 20px;
       display: flex;
@@ -110,27 +107,13 @@ export default {
         }
       }
     }
-    .components {
+    .main {
       height: 100%;
       flex: 1;
-      & > ul {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #fff;
-        & > li {
-          cursor: pointer;
-        }
-        & > li:not(:first-child) {
-          margin-left: 20px;
-        }
-      }
     }
     .control {
       height: 100%;
-      width: 20%;
+      width: 300px;
       display: flex;
       justify-content: flex-end;
       align-items: center;
@@ -144,7 +127,7 @@ export default {
       }
     }
   }
-  .component-view {
+  .editor-content {
     position: absolute;
     width: 100%;
     top: 50px;

@@ -1,6 +1,8 @@
 <template>
-  <!-- 发布活动 -->
-  <div class="page-editor-push"></div>
+  <!-- 组件属性编辑 -->
+  <div class="control-view">
+      #control-view
+  </div>
 </template>
 
 <script>
