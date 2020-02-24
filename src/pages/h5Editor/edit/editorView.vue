@@ -7,9 +7,16 @@
           v-for="(item,index) in componentsList"
           :key="item.id"
           @mouseup="rightClick($event,index)"
-          :class="{active:currentActiveItem.id===item.id}"
         >
-          <component @delete="deleteItem(index)" :is="`item-${item.type}`" :itemData="item"></component>
+          <component
+            @delete="deleteItem(index)"
+            @registerRightClickMenu="registerRightClickMenu"
+            class="component-item"
+            :class="{active:currentActiveItem.id===item.id}"
+            :is="`item-${item.type}`"
+            :itemData="item"
+            :ref="item.id"
+          ></component>
         </li>
       </transition-group>
     </div>
@@ -21,6 +28,7 @@
       <right-click-menu
         :x="rightClickMenuData.x"
         :y="rightClickMenuData.y"
+        :additionMenu="additionMenu"
         @command="rightClickCommand"
       ></right-click-menu>
     </div>
@@ -41,7 +49,8 @@ export default {
         show: false,
         x: 0,
         y: 0,
-        closeFlag: false
+        closeFlag: false,
+        additionMenu: {}
       }
     };
   },
@@ -57,8 +66,16 @@ export default {
     // componentsList_filter() {
     //   return this.componentsList.filter(item => item);
     // },
+    //当前活跃状态的item
     currentActiveItem() {
       return this.componentsList[this.currentActiveItemIdx] || {};
+    },
+    //附加菜单（附加的菜单通过组件的registerRightClickMenu事件注册）
+    additionMenu() {
+      let menu = this.rightClickMenuData.additionMenu[
+        this.currentActiveItem.id
+      ];
+      return menu || [];
     }
   },
   directives: {
@@ -75,8 +92,28 @@ export default {
     //删除
     deleteItem(index) {
       let componentsList = [...this.componentsList];
-      componentsList.splice(index, 1);
+      let delItem = componentsList.splice(index, 1);
       this.$emit("update:componentsList", componentsList);
+      //删除组件的同时要删除该组件之前注册的菜单选项
+      if (this.rightClickMenuData.additionMenu[delItem.id]) {
+        delete this.rightClickMenuData.additionMenu[delItem.id];
+      }
+    },
+    //注册右键菜单
+    registerRightClickMenu(data) {
+      console.log(data);
+      if (!data) return;
+      let { id, menuList } = data;
+      let _addData = {};
+      _addData[id] = menuList.map(item => {
+        item.custom = true;
+        return item;
+      });
+      this.rightClickMenuData.additionMenu = Object.assign(
+        {},
+        this.rightClickMenuData.additionMenu,
+        _addData
+      );
     },
     //右键
     rightClick(e, index) {
@@ -109,7 +146,13 @@ export default {
     cancelSelect() {
       this.currentActiveItemIdx = -1;
     },
-    rightClickCommand({ command, value }) {
+    //执行右键菜单命令
+    rightClickCommand(data) {
+      let { command, value, custom } = data;
+      if (custom) {
+        this.customRightClickCommand(data);
+        return;
+      }
       let currentActiveItemIdx = this.currentActiveItemIdx;
       if (command === "delete") {
         this.currentActiveItemIdx = -1;
@@ -155,6 +198,14 @@ export default {
       }
       this.closeRightClickMenu();
       this.currentActiveItemIdx = currentActiveItemIdx;
+    },
+    //自定义命令（由组件注册的右键命令）
+    customRightClickCommand(data) {
+      let commandFn = this.$refs[this.currentActiveItem.id][0].rightClick;
+      if (commandFn) {
+        commandFn(data);
+      }
+      this.closeRightClickMenu();
     }
   }
 };
@@ -179,9 +230,12 @@ export default {
         width: 100%;
         transition: 0.2s;
         box-sizing: border-box;
-        border: 1px solid transparent;
-        &.active {
-          border: 1px solid $color-theme;
+        .component-item {
+          border: 1px solid transparent;
+          box-sizing: border-box;
+          &.active {
+            border-color: $color-theme;
+          }
         }
       }
     }

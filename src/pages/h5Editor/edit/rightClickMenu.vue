@@ -2,7 +2,12 @@
   <!-- 右键菜单 -->
   <div class="right-click-menu" :style="menuStyle">
     <ul>
-      <li v-for="(item,index) in menuList" :key="index" @click.stop="command(item)">
+      <li
+        v-for="(item,index) in menuList_addition"
+        :key="index"
+        @click.stop="command(item)"
+        :style="item.style"
+      >
         <span>{{item.label}}</span>
       </li>
     </ul>
@@ -17,38 +22,61 @@ export default {
         {
           label: "编辑",
           command: "edit",
-          value: ""
+          value: "",
+          custom: false,
+          style:{
+            "border-top":"1px solid #EBEEF5"
+          }
         },
         {
           label: "置于顶层",
           command: "move",
-          value: "top"
+          value: "top",
+          custom: false
         },
         {
           label: "上移一层",
           command: "move",
-          value: "-1"
+          value: "-1",
+          custom: false
         },
         {
           label: "下移一层",
           command: "move",
-          value: "+1"
+          value: "+1",
+          custom: false
         },
         {
           label: "置于底层",
           command: "move",
-          value: "bottom"
+          value: "bottom",
+          custom: false
         },
         {
           label: "删除",
           command: "delete",
-          value: ""
+          value: "",
+          custom: false,
+          style: {
+            color: "#F56C6C"
+          }
         }
       ],
       height: 0
     };
   },
   computed: {
+    //加上附加菜单之后的菜单
+    menuList_addition() {
+      let result = [];
+      if (this.additionMenu && this.additionMenu.length > 0) {
+        result = [...this.additionMenu, ...this.menuList];
+      } else {
+        result = this.menuList;
+      }
+      return result;
+    },
+    //菜单位置
     menuStyle() {
       let top = this.y;
       if (top > this.maxTop) {
@@ -61,15 +89,35 @@ export default {
       };
     }
   },
-  props: ["x", "y"],
+  props: {
+    //left的值
+    x: {
+      type: Number
+    },
+    //top的值
+    y: {
+      type: Number
+    },
+    additionMenu: {
+      type: Array,
+      default() {
+        return [];
+      }
+    }
+  },
   methods: {
     command(item) {
       this.$emit("command", item);
     }
   },
-  mounted() {
-    this.height = this.menuList.length * 26;
-    this.maxTop = document.body.clientHeight - this.height;
+  watch: {
+    menuList_addition: {
+      handler(newVal) {
+        this.height = newVal.length * 26;
+        this.maxTop = document.body.clientHeight - this.height;
+      },
+      immediate: true
+    }
   }
 };
 </script>

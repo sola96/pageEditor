@@ -1,13 +1,17 @@
 <template>
   <!-- 图片 -->
-  <div class="editor-view_picture">
-    <div v-if="!in_itemData.src" class="add-picture">
+  <div class="editor-view_picture" :class="{fold:isFold}">
+    <div v-show="!in_itemData.src" class="add-picture">
       <i class="el-icon-circle-plus"></i>
       <span>添加图片</span>
-      <input type="file" @change="selectImg" />
+      <input ref="fileInput" type="file" @change="selectImg" />
     </div>
-    <div class="picture" v-else>
+    <div class="picture" v-show="in_itemData.src" :class="{fold:isFold}">
       <img :src="in_itemData.src" alt />
+      <div class="fold-info" v-if="isFold">
+        <div class="info">{{originImgData.name}}</div>
+        <i class="el-icon-arrow-down" @click="spreadPicture"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -19,7 +23,8 @@ export default {
   data() {
     return {
       in_itemData: {},
-      originImgData: null
+      originImgData: null,
+      isFold: false
     };
   },
   props: {
@@ -36,7 +41,7 @@ export default {
       let file = inputNode.files;
       let imgData = file;
       let reader = new FileReader();
-      file.length > 0 && Object.assign(this.$data, this.$options.data());
+      // file.length > 0 && Object.assign(this.$data, this.$options.data());
       reader.onload = () => {
         this.in_itemData = Object.assign({}, this.in_itemData, {
           src: reader.result
@@ -44,20 +49,105 @@ export default {
       };
       if (imgData && (imgData = imgData[0])) {
         if (!/image/.test(imgData.type)) {
-          alert("请选择图片文件(*.jpg或*.png格式,2MB以内)");
+          this.$message.info("请选择图片文件(*.jpg或*.png格式,2MB以内)");
         } else if (!["jpg", "png"].includes(imgData.name.replace(/.+\./, ""))) {
-          alert("请选择正确格式的图片(*.jpg或*.png格式)");
+          this.$message.info("请选择正确格式的图片(*.jpg或*.png格式)");
         } else if (imgData.size > MAX_IMG_SIZE) {
-          alert("图片体积过大,请控制在2MB以内");
+          this.$message.info("图片体积过大,请控制在2MB以内");
         } else {
           this.originImgData = imgData;
           reader.readAsDataURL(imgData);
         }
       }
+    },
+    //右键菜单事件
+    rightClick({ command, value }) {
+      if (command === "add") {
+        //添加图片
+        this.$refs.fileInput.click();
+      } else if (command === "fold") {
+        //折叠图片
+        this.foldPicture();
+      } else if (command === "spread") {
+        //收起图片
+        this.spreadPicture();
+      }
+    },
+    //收起图片
+    foldPicture() {
+      let menuList = [
+        {
+          label: "更换图片",
+          command: "add",
+          value: ""
+        },
+        {
+          label: "展开图片",
+          command: "spread",
+          value: ""
+        }
+      ];
+      this.isFold = true;
+      this.registerMenu(menuList);
+    },
+    //展开图片
+    spreadPicture() {
+      let menuList = [
+        {
+          label: "更换图片",
+          command: "add",
+          value: ""
+        },
+        {
+          label: "收起图片",
+          command: "fold",
+          value: ""
+        }
+      ];
+      this.isFold = false;
+      this.registerMenu(menuList);
+    },
+    //注册菜单
+    registerMenu(menuList) {
+      this.$emit("registerRightClickMenu", {
+        id: this.itemData.id,
+        menuList
+      });
     }
   },
   created() {
     this.in_itemData = Object.assign({}, this.itemData);
+  },
+  watch: {
+    originImgData: {
+      handler(newVal) {
+        let menuList = null;
+        if (newVal) {
+          menuList = [
+            {
+              label: "更换图片",
+              command: "add",
+              value: ""
+            },
+            {
+              label: "收起图片",
+              command: "fold",
+              value: ""
+            }
+          ];
+        } else {
+          menuList = [
+            {
+              label: "添加图片",
+              command: "add",
+              value: ""
+            }
+          ];
+        }
+        this.registerMenu(menuList);
+      },
+      immediate: true
+    }
   }
 };
 </script>
@@ -66,6 +156,9 @@ export default {
 @import "~@/assets/variable.scss";
 .editor-view_picture {
   width: 100%;
+  &.fold {
+    margin: 10px 0;
+  }
   .add-picture {
     margin: 10px;
     background-color: #fff;
@@ -99,8 +192,50 @@ export default {
     }
   }
   .picture {
+    position: relative;
+    overflow: hidden;
+    &.fold {
+      height: 40px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      &::after {
+      }
+    }
     img {
       width: 100%;
+    }
+    .fold-info {
+      width: 100%;
+      height: 40px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: rgb(255, 255, 255);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      padding-left: 20px;
+      user-select: none;
+
+      .info {
+        width: 80%;
+        @include no-wrap;
+        font-size: 13px;
+      }
+      i {
+        display: inline-block;
+        height: 40px;
+        flex: 1;
+        box-sizing: border-box;
+        padding-right: 20px;
+        cursor: pointer;
+        line-height: 40px;
+        text-align: right;
+        &:hover {
+          color: $color-theme;
+        }
+      }
     }
   }
 }
