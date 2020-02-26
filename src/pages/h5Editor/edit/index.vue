@@ -8,10 +8,10 @@
       </div>
     </div>
     <div class="editor-view">
-      <editor-view :componentsList.sync="componentsList"></editor-view>
+      <editor-view :componentsList.sync="componentsList" @setControlData="setControlData"></editor-view>
     </div>
     <div class="control-view">
-      <control-view></control-view>
+      <control-picture ref="control-picture" v-show="currentControlType==='picture'"></control-picture>
     </div>
   </div>
 </template>
@@ -19,16 +19,25 @@
 <script>
 import ownerTemplate from "./ownerTemplate";
 import editorView from "./editorView";
-import controlView from "./controlView";
+import controlPicture from "./controlViewItem/picture";
 export default {
-  components: { ownerTemplate, editorView, controlView },
+  components: { ownerTemplate, editorView, controlPicture },
   data() {
     return {
       ownerTemplateShow: true, //“我的推广页”显示
-      componentsList: []
+      componentsList: [], //组件item列表
+      currentControlType: "",
+      currentControlData: {}
     };
   },
   methods: {
+    setControlData({ type, data }) {
+      this.currentControlType = type;
+      if (data) {
+        let setDataFn = this.$refs["control-" + type].setData;
+        setDataFn && setDataFn(data);
+      }
+    },
     getRandomStr() {
       return Math.random() + Math.random().toString(32);
     },
@@ -82,7 +91,7 @@ export default {
   .owner-template {
     width: 200px;
     transition: 0.3s;
-    z-index: 2;
+    z-index: 3;
     &.hide {
       margin-left: -200px;
     }
@@ -105,12 +114,15 @@ export default {
   }
   & > .editor-view {
     flex: 1;
-    border: 1px solid #ff0000;
     overflow-y: scroll;
+    position: relative;
+    z-index: 1;
+    min-width: 400px;
   }
   & > .control-view {
+    z-index: 2;
+    height: 100%;
     width: 300px;
-    // border: 1px solid #00ff00;
     background-color: #fff;
   }
 }

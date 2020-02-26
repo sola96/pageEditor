@@ -1,39 +1,39 @@
 <template>
   <!-- 图片 -->
-  <div class="editor-view_picture" :class="{fold:isFold}">
-    <div v-show="!in_itemData.src" class="add-picture">
-      <i class="el-icon-circle-plus"></i>
-      <span>添加图片</span>
-      <input ref="fileInput" type="file" @change="selectImg" />
-    </div>
-    <div class="picture" v-show="in_itemData.src" :class="{fold:isFold}">
-      <img :src="in_itemData.src" alt />
-      <div class="fold-info" v-if="isFold">
-        <div class="info">{{originImgData.name}}</div>
-        <i class="el-icon-arrow-down" @click="spreadPicture"></i>
+  <div class="editor-view_picture">
+    <div class="content" :class="{fold:isFold,active:isActive}">
+      <div v-show="!src" class="add-picture">
+        <i class="el-icon-circle-plus"></i>
+        <span>添加图片</span>
+        <input ref="fileInput" type="file" @change="selectImg" />
+      </div>
+      <div class="picture" v-show="src" :class="{fold:isFold}">
+        <img :src="src" alt />
+        <div class="fold-info" v-if="isFold">
+          <div class="info">{{imgName}}</div>
+          <i class="el-icon-arrow-down" @click="spreadPicture"></i>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-const MAX_IMG_SIZE = 2048000; //图片最大限制
-
+const MAX_IMG_SIZE = 2048000; //图片最大限制 1024 * 1000 * 2
+import { common } from "./mixin";
 export default {
+  mixins: [common],
   data() {
     return {
-      in_itemData: {},
-      originImgData: null,
-      isFold: false
+      /** @property {Object} in_itemData mixin中的in_itemData*/
+      originImgData: null, //数据原始数据
+      isFold: false, //是否处于折叠状态
+      src: "",
+      imgName: ""
     };
   },
-  props: {
-    itemData: {
-      default() {
-        return {};
-      },
-      type: Object
-    }
+  computed: {
+    /** @property {Boolean} isActive 是否处于活跃状态*/
   },
   methods: {
     //选择图片
@@ -43,9 +43,7 @@ export default {
       let reader = new FileReader();
       // file.length > 0 && Object.assign(this.$data, this.$options.data());
       reader.onload = () => {
-        this.in_itemData = Object.assign({}, this.in_itemData, {
-          src: reader.result
-        });
+        this.src = reader.result;
       };
       if (imgData && (imgData = imgData[0])) {
         if (!/image/.test(imgData.type)) {
@@ -56,6 +54,7 @@ export default {
           this.$message.info("图片体积过大,请控制在2MB以内");
         } else {
           this.originImgData = imgData;
+          this.imgName = imgData.name
           reader.readAsDataURL(imgData);
         }
       }
@@ -106,23 +105,14 @@ export default {
       ];
       this.isFold = false;
       this.registerMenu(menuList);
-    },
-    //注册菜单
-    registerMenu(menuList) {
-      this.$emit("registerRightClickMenu", {
-        id: this.itemData.id,
-        menuList
-      });
     }
   },
-  created() {
-    this.in_itemData = Object.assign({}, this.itemData);
-  },
+
   watch: {
     originImgData: {
-      handler(newVal) {
+      handler(newVal, oldVal) {
         let menuList = null;
-        if (newVal) {
+        if (newVal && !oldVal) {
           menuList = [
             {
               label: "更换图片",
@@ -135,7 +125,9 @@ export default {
               value: ""
             }
           ];
-        } else {
+          this.registerMenu(menuList);
+        }
+        if (!newVal) {
           menuList = [
             {
               label: "添加图片",
@@ -143,10 +135,36 @@ export default {
               value: ""
             }
           ];
+          this.registerMenu(menuList);
         }
-        this.registerMenu(menuList);
       },
       immediate: true
+    },
+    isActive(newVal) {
+      if (newVal) {
+        let _this = this;
+        let data = {
+          get originImgData() {
+            return _this.originImgData;
+          },
+          set originImgData(value) {
+            _this.originImgData = value;
+          },
+          get src() {
+            return _this.src;
+          },
+          set src(value) {
+            _this.src = value;
+          },
+          get imgName() {
+            return _this.imgName;
+          },
+          set imgName(value) {
+            _this.imgName = value;
+          }
+        };
+        this.$emit("setControlData", { type: this.itemData.type, data });
+      }
     }
   }
 };
@@ -156,8 +174,15 @@ export default {
 @import "~@/assets/variable.scss";
 .editor-view_picture {
   width: 100%;
-  &.fold {
-    margin: 10px 0;
+  & > .content {
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    &.active {
+      border-color: $color-theme;
+    }
+    &.fold {
+      margin: 10px;
+    }
   }
   .add-picture {
     margin: 10px;
@@ -198,11 +223,9 @@ export default {
       height: 40px;
       box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
       border-radius: 6px;
-      &::after {
-      }
     }
     img {
-      width: 100%;
+      width: $editor-width;
     }
     .fold-info {
       width: 100%;

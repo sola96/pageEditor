@@ -1,7 +1,7 @@
 <template>
-  <!-- 组件属性编辑 -->
+  <!-- 组件控制器 -->
   <div class="control-view">
-      #control-view
+    <slot></slot>
   </div>
 </template>
 
@@ -11,4 +11,12 @@ export default {};
 
 <style lang="scss" scoped>
 @import "~@/assets/variable.scss";
+.control-view {
+  position: fixed;
+  width: 300px;
+  top: 50px;
+  bottom: 0;
+  right: 0;
+  background-color: #fff;
+}
 </style>

@@ -11,11 +11,13 @@
           <component
             @delete="deleteItem(index)"
             @registerRightClickMenu="registerRightClickMenu"
+            v-on="$listeners"
             class="component-item"
             :class="{active:currentActiveItem.id===item.id}"
             :is="`item-${item.type}`"
             :itemData="item"
             :ref="item.id"
+            :activeId="currentActiveItem.id"
           ></component>
         </li>
       </transition-group>
@@ -46,11 +48,11 @@ export default {
     return {
       currentActiveItemIdx: -1, //当前active状态的item索引
       rightClickMenuData: {
-        show: false,
-        x: 0,
-        y: 0,
-        closeFlag: false,
-        additionMenu: {}
+        show: false, //右键菜单显示
+        x: 0, //位置的left
+        y: 0, //位置的top
+        closeFlag: false, //该值为true的时候，执行closeRightClickMenu()才会关闭菜单
+        additionMenu: {} //组件注册的菜单
       }
     };
   },
@@ -63,12 +65,9 @@ export default {
     }
   },
   computed: {
-    // componentsList_filter() {
-    //   return this.componentsList.filter(item => item);
-    // },
     //当前活跃状态的item
     currentActiveItem() {
-      return this.componentsList[this.currentActiveItemIdx] || {};
+      return this.componentsList[this.currentActiveItemIdx] || { id: "" };
     },
     //附加菜单（附加的菜单通过组件的registerRightClickMenu事件注册）
     additionMenu() {
@@ -79,6 +78,7 @@ export default {
     }
   },
   directives: {
+    //阻止默认的右键菜单
     preventRightClick: {
       inserted(el) {
         el.oncontextmenu = function(e) {
@@ -86,6 +86,7 @@ export default {
         };
       }
     },
+    //在元素之外点击
     clickoutside
   },
   methods: {
@@ -98,10 +99,13 @@ export default {
       if (this.rightClickMenuData.additionMenu[delItem.id]) {
         delete this.rightClickMenuData.additionMenu[delItem.id];
       }
+      //若当前active状态的item被删除，应取消选择
+      if (this.currentActiveItemIdx == index) {
+        this.cancelSelect();
+      }
     },
     //注册右键菜单
     registerRightClickMenu(data) {
-      console.log(data);
       if (!data) return;
       let { id, menuList } = data;
       let _addData = {};
@@ -115,7 +119,7 @@ export default {
         _addData
       );
     },
-    //右键
+    //item点击事件
     rightClick(e, index) {
       this.currentActiveItemIdx = index;
       if (e.button === 2) {
@@ -145,6 +149,7 @@ export default {
     //取消选中
     cancelSelect() {
       this.currentActiveItemIdx = -1;
+      this.$emit("setControlData", { data: null, type: "" }); //派发setControlData事件，清空父组件的控制器视图
     },
     //执行右键菜单命令
     rightClickCommand(data) {
@@ -155,16 +160,17 @@ export default {
       }
       let currentActiveItemIdx = this.currentActiveItemIdx;
       if (command === "delete") {
-        this.currentActiveItemIdx = -1;
         this.deleteItem(currentActiveItemIdx);
       } else if (command === "move") {
         let componentsList = [...this.componentsList];
         if (value === "top" && currentActiveItemIdx !== 0) {
+          //置于顶层
           let moveItem = componentsList.splice(currentActiveItemIdx, 1);
           componentsList.unshift(...moveItem);
           currentActiveItemIdx = 0;
         }
         if (value === "-1" && currentActiveItemIdx !== 0) {
+          //上移一蹭
           let curIdx = currentActiveItemIdx;
           let preIdx = currentActiveItemIdx - 1;
           [componentsList[curIdx], componentsList[preIdx]] = [
@@ -175,7 +181,7 @@ export default {
         }
         if (
           value === "+1" &&
-          currentActiveItemIdx !== componentsList.length - 1
+          currentActiveItemIdx !== componentsList.length - 1 //下移一层
         ) {
           let curIdx = currentActiveItemIdx;
           let nextIdx = currentActiveItemIdx + 1;
@@ -187,17 +193,18 @@ export default {
         }
         if (
           value === "bottom" &&
-          currentActiveItemIdx !== componentsList.length - 1
+          currentActiveItemIdx !== componentsList.length - 1 //置于底层
         ) {
           let moveItem = componentsList.splice(currentActiveItemIdx, 1);
           componentsList.push(...moveItem);
           currentActiveItemIdx = componentsList.length - 1;
         }
         this.$emit("update:componentsList", componentsList);
+        this.currentActiveItemIdx = currentActiveItemIdx;
       } else if (command === "edit") {
+        //...
       }
       this.closeRightClickMenu();
-      this.currentActiveItemIdx = currentActiveItemIdx;
     },
     //自定义命令（由组件注册的右键命令）
     customRightClickCommand(data) {
@@ -214,29 +221,17 @@ export default {
 <style lang="scss" scoped>
 @import "~@/assets/variable.scss";
 .editor-view {
-  width: 336px;
+  width: $editor-width;
   min-height: 596px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.06);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -298px;
-  margin-left: -168px;
-  margin-bottom: 40px;
+  margin: 60px auto;
   .content {
     .content-list {
       & > li {
-        width: 100%;
+        width: $editor-width;
         transition: 0.2s;
         box-sizing: border-box;
-        .component-item {
-          border: 1px solid transparent;
-          box-sizing: border-box;
-          &.active {
-            border-color: $color-theme;
-          }
-        }
       }
     }
   }

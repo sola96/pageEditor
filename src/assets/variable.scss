@@ -16,6 +16,8 @@ $color-line: #dcdfe6;
 
 $color-line-l: #e4e7ed;
 
+$editor-width: 336px;
+
 @mixin no-wrap {
   overflow: hidden;
   text-overflow: ellipsis;
