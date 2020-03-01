@@ -1,15 +1,22 @@
 <template>
   <!-- 编辑活动 -->
   <div class="page-editor-edit">
+    <!-- 模板列表 -->
     <div class="owner-template" :class="{hide:!ownerTemplateShow}">
       <owner-template></owner-template>
       <div class="toggle-visible" @click="ownerTemplateShow=!ownerTemplateShow">
         <i :class="[ownerTemplateShow?'el-icon-arrow-left':'el-icon-arrow-right']"></i>
       </div>
     </div>
+    <!-- 编辑器主视图 -->
     <div class="editor-view">
       <editor-view :componentsList.sync="componentsList" @setControlData="setControlData"></editor-view>
     </div>
+    <!--排序面板：组件排序视图 -->
+    <div class="component-sort-view">
+      <component-sort-view :componentsList.sync="componentsList"></component-sort-view>
+    </div>
+    <!-- 编辑面板：组件控制器视图 -->
     <div class="control-view">
       <control-picture ref="control-picture" v-show="currentControlType==='picture'"></control-picture>
     </div>
@@ -19,15 +26,17 @@
 <script>
 import ownerTemplate from "./ownerTemplate";
 import editorView from "./editorView";
+import componentSortView from "./componentSortView";
 import controlPicture from "./controlViewItem/picture";
 export default {
-  components: { ownerTemplate, editorView, controlPicture },
+  components: { ownerTemplate, editorView, componentSortView, controlPicture },
   data() {
     return {
       ownerTemplateShow: true, //“我的推广页”显示
       componentsList: [], //组件item列表
       currentControlType: "",
-      currentControlData: {}
+      currentControlData: {},
+      itemCount: 1
     };
   },
   methods: {
@@ -43,26 +52,30 @@ export default {
     },
     pushComponentsList(item) {
       item.id = this.getRandomStr();
+      item.label = item.label + String(this.itemCount++);
       this.componentsList.push(item);
     },
-    handler_add_picture({ type, config }) {
+    handler_add_picture({ type, config, label }) {
       let item = {
-        src: "",
         type,
-        config
+        config,
+        label
       };
       this.pushComponentsList(item);
     },
-    handler_add_richText(config) {
-      console.log("添加富文本", config.name);
+    handler_add_richText({ type, config, label }) {},
+    handler_add_video({ type, config, label }) {
+      let item = {
+        type,
+        config,
+        label
+      };
+      this.pushComponentsList(item);
     },
-    handler_add_video(config) {
-      console.log("添加视频", config.name);
-    },
-    handler_add_form(config) {
+    handler_add_form({ type, config, label }) {
       console.log("添加表单", config.name);
     },
-    handler_add_button(config) {
+    handler_add_button({ type, config, label }) {
       console.log("添加按钮", config.name);
     },
     //添加components
@@ -88,7 +101,7 @@ export default {
     box-sizing: border-box;
     position: relative;
   }
-  .owner-template {
+  & > .owner-template {
     width: 200px;
     transition: 0.3s;
     z-index: 3;

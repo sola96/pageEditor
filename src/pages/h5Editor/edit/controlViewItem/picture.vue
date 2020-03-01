@@ -1,11 +1,11 @@
 <template>
   <!-- 图片 -->
   <div>
-    <div
-      class="editor-view_picture"
-      v-if="in_data.imgName"
-      @click="randomName"
-    >{{in_data.imgName}}</div>
+    <div class="editor-view_picture">
+      <div class="content">
+        <el-button size="small" @click="in_data.fileInput.click()">选择图片</el-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -19,10 +19,6 @@ export default {
   methods: {
     setData(data) {
       this.in_data = data;
-      console.log(this.in_data.imgName)
-    },
-    randomName() {
-      this.in_data.imgName = Math.random();
     }
   }
 };
@@ -33,5 +29,10 @@ export default {
 .editor-view_picture {
   width: 100%;
   overflow: hidden;
+  .content {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>

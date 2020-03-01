@@ -19,20 +19,23 @@ export default {
   data() {
     return {
       menuList: [
-        {
-          label: "编辑",
-          command: "edit",
-          value: "",
-          custom: false,
-          style:{
-            "border-top":"1px solid #EBEEF5"
-          }
-        },
+        // {
+        //   label: "编辑",
+        //   command: "edit",
+        //   value: "",
+        //   custom: false,
+        //   style:{
+        //     "border-top":"1px solid #EBEEF5"
+        //   }
+        // },
         {
           label: "置于顶层",
           command: "move",
           value: "top",
-          custom: false
+          custom: false,
+          style: {
+            "border-top": "1px solid #EBEEF5"
+          }
         },
         {
           label: "上移一层",

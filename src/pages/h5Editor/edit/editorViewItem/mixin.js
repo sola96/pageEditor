@@ -32,6 +32,10 @@ export const common = {
                 id: this.itemData.id,
                 menuList
             });
+        },
+        //设置控制器视图
+        setControlData() {
+            console.error("需要设置一个 'setControlData' 函数   ")
         }
     },
     created() {

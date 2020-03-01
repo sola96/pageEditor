@@ -54,8 +54,9 @@ export default {
           this.$message.info("图片体积过大,请控制在2MB以内");
         } else {
           this.originImgData = imgData;
-          this.imgName = imgData.name
+          this.imgName = imgData.name;
           reader.readAsDataURL(imgData);
+          this.setControlData();
         }
       }
     },
@@ -105,6 +106,24 @@ export default {
       ];
       this.isFold = false;
       this.registerMenu(menuList);
+    },
+    setControlData() {
+      let _this = this;
+      let data = {
+        get originImgData() {
+          return _this.originImgData;
+        },
+        get src() {
+          return _this.src;
+        },
+        get imgName() {
+          return _this.imgName;
+        },
+        get fileInput() {
+          return _this.$refs.fileInput;
+        }
+      };
+      this.$emit("setControlData", { type: this.itemData.type, data });
     }
   },
 
@@ -142,28 +161,7 @@ export default {
     },
     isActive(newVal) {
       if (newVal) {
-        let _this = this;
-        let data = {
-          get originImgData() {
-            return _this.originImgData;
-          },
-          set originImgData(value) {
-            _this.originImgData = value;
-          },
-          get src() {
-            return _this.src;
-          },
-          set src(value) {
-            _this.src = value;
-          },
-          get imgName() {
-            return _this.imgName;
-          },
-          set imgName(value) {
-            _this.imgName = value;
-          }
-        };
-        this.$emit("setControlData", { type: this.itemData.type, data });
+        this.setControlData();
       }
     }
   }

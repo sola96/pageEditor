@@ -55,7 +55,8 @@ export default {
     selectItem(itemConfig) {
       this.$emit("selectItem", {
         type: this.config.type,
-        config: itemConfig
+        config: itemConfig,
+        label: this.config.label
       });
     }
   }

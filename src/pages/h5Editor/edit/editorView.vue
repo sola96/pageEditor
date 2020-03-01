@@ -34,16 +34,28 @@
         @command="rightClickCommand"
       ></right-click-menu>
     </div>
+
   </div>
 </template>
 
 <script>
 import itemPicture from "./editorViewItem/picture";
+import itemRichText from "./editorViewItem/richText";
+import itemVideo from "./editorViewItem/video";
+import itemForm from "./editorViewItem/form";
+import itemButton from "./editorViewItem/button";
 import clickoutside from "element-ui/src/utils/clickoutside";
 import rightClickMenu from "./rightClickMenu";
 
 export default {
-  components: { rightClickMenu, itemPicture },
+  components: {
+    rightClickMenu,
+    itemPicture,
+    itemRichText,
+    itemVideo,
+    itemForm,
+    itemButton
+  },
   data() {
     return {
       currentActiveItemIdx: -1, //当前active状态的item索引
@@ -201,8 +213,6 @@ export default {
         }
         this.$emit("update:componentsList", componentsList);
         this.currentActiveItemIdx = currentActiveItemIdx;
-      } else if (command === "edit") {
-        //...
       }
       this.closeRightClickMenu();
     },

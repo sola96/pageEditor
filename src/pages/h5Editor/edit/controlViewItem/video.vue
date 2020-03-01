@@ -1,6 +1,8 @@
 <template>
   <!-- 视频 -->
-  <div class="editor-view_video"></div>
+  <div class="editor-view_video">
+    
+  </div>
 </template>
 
 <script>
