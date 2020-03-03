@@ -34,7 +34,6 @@
         @command="rightClickCommand"
       ></right-click-menu>
     </div>
-
   </div>
 </template>
 
@@ -233,7 +232,7 @@ export default {
 .editor-view {
   width: $editor-width;
   min-height: 596px;
-  background-color: #fff;
+  background-color: $color-bg-1;
   box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.06);
   margin: 60px auto;
   .content {

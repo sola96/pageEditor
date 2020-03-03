@@ -3,7 +3,8 @@
   <div class="editor-view_video">
     <div class="content" :class="{active:isActive}">
       <span class="label">视频链接:</span>
-      <el-input size="small" v-model="src"></el-input>
+      <input class="input" type="text" v-model="src" />
+      <!-- <el-input class="input" size="mini" v-model="src"></el-input> -->
     </div>
   </div>
 </template>
@@ -41,24 +42,35 @@ export default {
 @import "~@/assets/variable.scss";
 .editor-view_video {
   width: 100%;
-  margin: 10px 0;
+  box-sizing: border-box;
+  padding: 10px;
   & > .content {
-    border: 1px solid transparent;
     box-sizing: border-box;
     padding: 10px;
     display: flex;
     align-items: center;
-    &.active {
-      border-color: $color-theme;
-    }
+    background-color: $color-theme;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.2);
     .label {
       display: inline-block;
-      width: 100px;
+      width: 80px;
       line-height: 100%;
       height: 20px;
       line-height: 20px;
-      font-size: 14px;
+      font-size: 13px;
       user-select: none;
+      color: #fff;
+    }
+    .input {
+      flex: 1;
+      background-color: transparent;
+      border-bottom: 1px solid #fff;
+      font-size: 13px;
+      color: #fff;
+      &:focus{
+        border-bottom-width: 2px;
+      }
     }
   }
 }

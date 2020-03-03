@@ -185,7 +185,7 @@ export default {
   .add-picture {
     margin: 10px;
     background-color: #fff;
-    border-radius: 4px;
+    border-radius: 2px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -219,8 +219,8 @@ export default {
     overflow: hidden;
     &.fold {
       height: 40px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      border-radius: 6px;
+      box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.1);
+      border-radius: 2px;
     }
     img {
       width: $editor-width;

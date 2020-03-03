@@ -26,7 +26,7 @@
 <script>
 import ownerTemplate from "./ownerTemplate";
 import editorView from "./editorView";
-import componentSortView from "./componentSortView";
+import componentSortView from "./componentSortView/index";
 import controlPicture from "./controlViewItem/picture";
 export default {
   components: { ownerTemplate, editorView, componentSortView, controlPicture },
