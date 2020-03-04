@@ -1,5 +1,5 @@
 <template>
-  <div class="page-editor">
+  <div class="page-editor" v-preventRightClick>
     <div class="tab-bar">
       <ul class="tab">
         <li class="tab-item" :class="{active:current==='edit'}" @click="current='edit'">编辑活动</li>
@@ -23,6 +23,7 @@
 <script>
 import componentEdit from "./edit/index";
 import addComponents from "./tab/addComponents/addComponents";
+import directives from "./directives";
 export default {
   components: {
     componentEdit,
@@ -33,6 +34,9 @@ export default {
       current: "edit", //当前
       fullScreen: false //是否全屏
     };
+  },
+  directives: {
+    preventRightClick: directives.preventRightClick
   },
   methods: {
     //添加components

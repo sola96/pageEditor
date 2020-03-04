@@ -2,19 +2,19 @@
   <!-- 编辑活动 -->
   <div class="page-editor-edit">
     <!-- 模板列表 -->
-    <div class="owner-template" :class="{hide:!ownerTemplateShow}">
+    <div class="owner-template" :class="{hide:!STATE.ownerTemplateShow}">
       <owner-template></owner-template>
-      <div class="toggle-visible" @click="ownerTemplateShow=!ownerTemplateShow">
-        <i :class="[ownerTemplateShow?'el-icon-arrow-left':'el-icon-arrow-right']"></i>
+      <div class="toggle-visible" @click="STATE.ownerTemplateShow=!STATE.ownerTemplateShow">
+        <i :class="[STATE.ownerTemplateShow?'el-icon-arrow-left':'el-icon-arrow-right']"></i>
       </div>
     </div>
     <!-- 编辑器主视图 -->
     <div class="editor-view">
-      <editor-view :componentsList.sync="componentsList" @setControlData="setControlData"></editor-view>
+      <editor-view @setControlData="setControlData"></editor-view>
     </div>
     <!--排序面板：组件排序视图 -->
     <div class="component-sort-view">
-      <component-sort-view :componentsList.sync="componentsList"></component-sort-view>
+      <component-sort-view></component-sort-view>
     </div>
     <!-- 编辑面板：组件控制器视图 -->
     <div class="control-view">
@@ -28,12 +28,12 @@ import ownerTemplate from "./ownerTemplate";
 import editorView from "./editorView";
 import componentSortView from "./componentSortView/index";
 import controlPicture from "./controlViewItem/picture";
+import store from "../store";
 export default {
   components: { ownerTemplate, editorView, componentSortView, controlPicture },
   data() {
     return {
-      ownerTemplateShow: true, //“我的推广页”显示
-      componentsList: [], //组件item列表
+      STATE: store.state,
       currentControlType: "",
       currentControlData: {},
       itemCount: 1
@@ -53,7 +53,7 @@ export default {
     pushComponentsList(item) {
       item.id = this.getRandomStr();
       item.label = item.label + String(this.itemCount++);
-      this.componentsList.push(item);
+      store.commit("ADD_ITEM", item);
     },
     handler_add_picture({ type, config, label }) {
       let item = {

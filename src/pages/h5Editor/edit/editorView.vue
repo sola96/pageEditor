@@ -1,10 +1,10 @@
 <template>
   <!-- 编辑器视图 -->
-  <div class="editor-view" v-preventRightClick @click="cancelSelect">
+  <div class="editor-view" @click="cancelSelect">
     <div class="content" ref="content" @click.stop>
       <transition-group tag="ul" class="content-list" name="content-list">
         <li
-          v-for="(item,index) in componentsList"
+          v-for="(item,index) in STATE.componentsList"
           :key="item.id"
           @mouseup="rightClick($event,index)"
         >
@@ -13,11 +13,11 @@
             @registerRightClickMenu="registerRightClickMenu"
             v-on="$listeners"
             class="component-item"
-            :class="{active:currentActiveItem.id===item.id}"
+            :class="{active:STATE.currentActiveItem.id===item.id}"
             :is="`item-${item.type}`"
             :itemData="item"
             :ref="item.id"
-            :activeId="currentActiveItem.id"
+            :activeId="STATE.currentActiveItem.id"
           ></component>
         </li>
       </transition-group>
@@ -43,8 +43,9 @@ import itemRichText from "./editorViewItem/richText";
 import itemVideo from "./editorViewItem/video";
 import itemForm from "./editorViewItem/form";
 import itemButton from "./editorViewItem/button";
-import clickoutside from "element-ui/src/utils/clickoutside";
 import rightClickMenu from "./rightClickMenu";
+import store from "../store";
+import directives from "../directives";
 
 export default {
   components: {
@@ -57,7 +58,7 @@ export default {
   },
   data() {
     return {
-      currentActiveItemIdx: -1, //当前active状态的item索引
+      STATE: store.state,
       rightClickMenuData: {
         show: false, //右键菜单显示
         x: 0, //位置的left
@@ -67,51 +68,29 @@ export default {
       }
     };
   },
-  props: {
-    componentsList: {
-      default() {
-        return [];
-      },
-      type: Array
-    }
-  },
+  props: {},
   computed: {
-    //当前活跃状态的item
-    currentActiveItem() {
-      return this.componentsList[this.currentActiveItemIdx] || { id: "" };
-    },
     //附加菜单（附加的菜单通过组件的registerRightClickMenu事件注册）
     additionMenu() {
       let menu = this.rightClickMenuData.additionMenu[
-        this.currentActiveItem.id
+        this.STATE.currentActiveItem.id
       ];
       return menu || [];
     }
   },
   directives: {
-    //阻止默认的右键菜单
-    preventRightClick: {
-      inserted(el) {
-        el.oncontextmenu = function(e) {
-          e.preventDefault();
-        };
-      }
-    },
-    //在元素之外点击
-    clickoutside
+    clickoutside: directives.clickoutside
   },
   methods: {
     //删除
     deleteItem(index) {
-      let componentsList = [...this.componentsList];
-      let delItem = componentsList.splice(index, 1);
-      this.$emit("update:componentsList", componentsList);
+      let delItem = store.commit("DELETE_ITEM", index);
       //删除组件的同时要删除该组件之前注册的菜单选项
       if (this.rightClickMenuData.additionMenu[delItem.id]) {
         delete this.rightClickMenuData.additionMenu[delItem.id];
       }
       //若当前active状态的item被删除，应取消选择
-      if (this.currentActiveItemIdx == index) {
+      if (this.STATE.currentActiveItemIdx == index) {
         this.cancelSelect();
       }
     },
@@ -132,7 +111,7 @@ export default {
     },
     //item点击事件
     rightClick(e, index) {
-      this.currentActiveItemIdx = index;
+      store.commit("SET_CURIDX", index);
       if (e.button === 2) {
         let posX = e.pageX + 10;
         let posY = e.pageY + 10;
@@ -159,7 +138,7 @@ export default {
     },
     //取消选中
     cancelSelect() {
-      this.currentActiveItemIdx = -1;
+      store.commit("SET_CURIDX", -1);
       this.$emit("setControlData", { data: null, type: "" }); //派发setControlData事件，清空父组件的控制器视图
     },
     //执行右键菜单命令
@@ -169,60 +148,59 @@ export default {
         this.customRightClickCommand(data);
         return;
       }
-      let currentActiveItemIdx = this.currentActiveItemIdx;
+      let currentActiveItemIdx = this.STATE.currentActiveItemIdx;
       if (command === "delete") {
         this.deleteItem(currentActiveItemIdx);
       } else if (command === "move") {
-        let componentsList = [...this.componentsList];
+        let componentsList = [...this.STATE.componentsList];
         if (value === "top" && currentActiveItemIdx !== 0) {
           //置于顶层
-          let moveItem = componentsList.splice(currentActiveItemIdx, 1);
-          componentsList.unshift(...moveItem);
-          currentActiveItemIdx = 0;
+          store.commit("MOVE_TOP", currentActiveItemIdx);
         }
         if (value === "-1" && currentActiveItemIdx !== 0) {
           //上移一蹭
-          let curIdx = currentActiveItemIdx;
-          let preIdx = currentActiveItemIdx - 1;
-          [componentsList[curIdx], componentsList[preIdx]] = [
-            componentsList[preIdx],
-            componentsList[curIdx]
-          ];
-          currentActiveItemIdx = preIdx;
+          store.commit("MOVE_UPPER", currentActiveItemIdx);
         }
         if (
           value === "+1" &&
-          currentActiveItemIdx !== componentsList.length - 1 //下移一层
+          currentActiveItemIdx !== componentsList.length - 1
         ) {
-          let curIdx = currentActiveItemIdx;
-          let nextIdx = currentActiveItemIdx + 1;
-          [componentsList[curIdx], componentsList[nextIdx]] = [
-            componentsList[nextIdx],
-            componentsList[curIdx]
-          ];
-          currentActiveItemIdx = nextIdx;
+          //下移一层
+          store.commit("MOVE_LOWER", currentActiveItemIdx);
         }
         if (
           value === "bottom" &&
-          currentActiveItemIdx !== componentsList.length - 1 //置于底层
+          currentActiveItemIdx !== componentsList.length - 1
         ) {
-          let moveItem = componentsList.splice(currentActiveItemIdx, 1);
-          componentsList.push(...moveItem);
-          currentActiveItemIdx = componentsList.length - 1;
+          //置于底层
+          store.commit("MOVE_BOTTOM", currentActiveItemIdx);
         }
-        this.$emit("update:componentsList", componentsList);
-        this.currentActiveItemIdx = currentActiveItemIdx;
       }
       this.closeRightClickMenu();
     },
     //自定义命令（由组件注册的右键命令）
     customRightClickCommand(data) {
-      let commandFn = this.$refs[this.currentActiveItem.id][0].rightClick;
+      let commandFn = this.$refs[this.STATE.currentActiveItem.id][0].rightClick;
       if (commandFn) {
         commandFn(data);
       }
       this.closeRightClickMenu();
     }
+  },
+  mounted() {
+    let self = this;
+    this.keydownDelete = e => {
+      if (e.keyCode === 8) {
+        //删除
+        if (self.STATE.currentActiveItemIdx > -1) {
+          self.deleteItem(self.STATE.currentActiveItemIdx);
+        }
+      }
+    };
+    document.addEventListener("keydown", this.keydownDelete);
+  },
+  beforeDestroy() {
+    document.removeEventListener("onkeydown", this.keydownDelete);
   }
 };
 </script>

@@ -2,7 +2,7 @@
   <!-- 组件排序视图 -->
   <div class="component-sort-view" id="component-sort-view">
     <div class="tab drag">
-      <div class="title" v-drag>选择窗口</div>
+      <div class="title" v-drag:#component-sort-view>选择窗口</div>
       <div class="min" @click="contentShow=!contentShow">
         <i :class="[contentShow?'el-icon-arrow-up':'el-icon-arrow-down']"></i>
       </div>
@@ -19,7 +19,7 @@
             <li
               class="item"
               :class="{active:currentDrag.id===item.id}"
-              v-for="item in componentsList"
+              v-for="item in in_componentsList"
               :key="item.id"
             >
               <sort-item :itemData="item" class="item-content"></sort-item>
@@ -34,60 +34,34 @@
 <script>
 import draggable from "vuedraggable";
 import sortItem from "./sortItem";
+import store from "../../store";
+import directives from "../../directives";
+
 export default {
   components: { draggable, sortItem },
   data() {
     return {
+      STATE: store.state,
       contentShow: true,
       currentDragIdx: -1
     };
   },
   computed: {
     currentDrag() {
-      return this.componentsList[this.currentDragIdx] || { id: "" };
+      return this.in_componentsList[this.currentDragIdx] || { id: "" };
     },
     in_componentsList: {
       get() {
-        return this.componentsList;
+        return this.STATE.componentsList;
       },
       set(val) {
-        this.$emit("update:componentsList", val);
+        store.commit("REPLACE_COMPONENT_LIST", val);
       }
     }
   },
-  props: {
-    componentsList: {
-      default() {
-        return [];
-      },
-      type: Array
-    }
-  },
+  props: {},
   directives: {
-    drag(el) {
-      el.onmousedown = function(e) {
-        let parent_el = document.getElementById("component-sort-view");
-        //获取鼠标点击处分别与div左边和上边的距离：鼠标位置-div位置
-        var divx = e.clientX - parent_el.offsetLeft;
-        var divy = e.clientY - parent_el.offsetTop;
-        //包含在onmousedown里，表示点击后才移动，为防止鼠标移出div，使用document.onmousemove
-        document.onmousemove = function(e) {
-          //获取移动后div的位置：鼠标位置-divx/divy
-          // var l = Math.max(e.clientX - divx, 200);
-          var l = Math.max(e.clientX - divx);
-          var t = Math.max(e.clientY - divy, 50);
-          if (t - 50 <= 20) {
-            t = 50;
-          }
-          parent_el.style.left = l + "px";
-          parent_el.style.top = t + "px";
-        };
-        document.onmouseup = function(e) {
-          document.onmousemove = null;
-          document.onmouseup = null;
-        };
-      };
-    }
+    drag: directives.drag
   },
   methods: {
     startDrag(e) {
@@ -144,7 +118,7 @@ export default {
     width: 100%;
     overflow-y: scroll;
     height: 70vh;
-    transition: .2s;
+    transition: 0.2s;
     .item {
       height: 32px;
       line-height: 32px;
