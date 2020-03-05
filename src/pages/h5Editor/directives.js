@@ -1,6 +1,8 @@
 import clickoutside from "element-ui/src/utils/clickoutside";
 import store from "./store"
 
+let activeViewZidx = 4
+
 const directives = {
     //阻止默认的右键菜单
     preventRightClick: {
@@ -12,6 +14,13 @@ const directives = {
     },
     //在元素之外点击
     clickoutside,
+    stick: {
+        bind(el) {
+            el.onmousedown = function (e) {
+                el.style.zIndex = activeViewZidx++;
+            }
+        }
+    },
     drag: {
         bind(el, binding) {
             el.onmousedown = function (e) {

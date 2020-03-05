@@ -18,6 +18,7 @@
             :itemData="item"
             :ref="item.id"
             :activeId="STATE.currentActiveItem.id"
+            :index="index"
           ></component>
         </li>
       </transition-group>
@@ -185,11 +186,18 @@ export default {
         commandFn(data);
       }
       this.closeRightClickMenu();
+    },
+    //获取预览视图的数据
+    getPreviewData() {
+      let previewData = new Array(this.STATE.componentsList.length).fill(null);
+      this.STATE.componentsList.forEach(item => {
+        this.$refs[item.id][0].render(previewData);
+      });
     }
   },
   mounted() {
     let self = this;
-    this.keydownDelete = e => {
+    this.keydownEvent = e => {
       if (e.keyCode === 8) {
         //删除
         if (self.STATE.currentActiveItemIdx > -1) {
@@ -197,10 +205,10 @@ export default {
         }
       }
     };
-    document.addEventListener("keydown", this.keydownDelete);
+    document.addEventListener("keydown", this.keydownEvent);
   },
   beforeDestroy() {
-    document.removeEventListener("onkeydown", this.keydownDelete);
+    document.removeEventListener("onkeydown", this.keydownEvent);
   }
 };
 </script>

@@ -107,6 +107,7 @@ export default {
       this.isFold = false;
       this.registerMenu(menuList);
     },
+    //设置控制器视图
     setControlData() {
       let _this = this;
       let data = {
@@ -124,6 +125,11 @@ export default {
         }
       };
       this.$emit("setControlData", { type: this.itemData.type, data });
+    },
+    //渲染,父组件会派发component:render事件，该render函数为component:render事件的回调
+    render(previewData) {
+      console.log("ppppppppp")
+      previewData[this.index] = this.index;
     }
   },
 

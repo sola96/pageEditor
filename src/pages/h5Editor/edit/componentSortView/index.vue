@@ -1,6 +1,6 @@
 <template>
   <!-- 组件排序视图 -->
-  <div class="component-sort-view" id="component-sort-view">
+  <div class="component-sort-view" id="component-sort-view" v-stick>
     <div class="tab drag">
       <div class="title" v-drag:#component-sort-view>选择窗口</div>
       <div class="min" @click="contentShow=!contentShow">
@@ -61,7 +61,8 @@ export default {
   },
   props: {},
   directives: {
-    drag: directives.drag
+    drag: directives.drag,
+    stick: directives.stick
   },
   methods: {
     startDrag(e) {
