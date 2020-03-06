@@ -58,6 +58,36 @@ export default {
   mounted() {
     this.$emit("refreshPreview");
     store.commit("TOGGLE_PREVIEW_WAY", "manual");
+    this.keyCodeMap = {
+      49: false,
+      18: false
+    };
+    let self = this;
+    document.addEventListener("keydown", e => {
+      if (e.keyCode === 49) {
+        self.keyCodeMap[49] = true;
+      }
+      if (e.keyCode === 18) {
+        self.keyCodeMap[18] = true;
+      }
+      console.log(self.keyCodeMap)
+      if (
+        self.STATE.previewWay &&
+        self.STATE.previewWay === "manual" &&
+        self.keyCodeMap[18] &&
+        self.keyCodeMap[49]
+      ) {
+        self.$emit("refreshPreview");
+      }
+    });
+    document.addEventListener("keyup", e => {
+      if (e.keyCode === 49) {
+        self.keyCodeMap[49] = false;
+      }
+      if (e.keyCode === 18) {
+        self.keyCodeMap[18] = false;
+      }
+    });
   },
   beforeDestroy() {
     store.commit("REPALCE_PREVIEW_DATA", []);

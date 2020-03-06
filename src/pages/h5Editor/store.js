@@ -93,7 +93,7 @@ const store = {
             if (state.previewWay && state.previewWay === "auto") {
                 state.previewData = arrMoveLower(state.previewData, index)
             }
-            return preIdx;
+            return nextIdx;
         },
         //移动到底部
         MOVE_BOTTOM(state, index) {
@@ -114,9 +114,9 @@ const store = {
             state.previewData = previewData;
         },
         //设置预览数据
-        SET_PREVIEW_DATA(state, { index, dom }) {
-            state.previewData[index] = dom;
-            state.previewData = [...previewData];
+        SET_PREVIEW_DATA(state, { index, data }) {
+            state.previewData[index] = data;
+            state.previewData = [...state.previewData];
         }
     },
     actions: {

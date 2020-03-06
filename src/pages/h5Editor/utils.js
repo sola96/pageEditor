@@ -56,6 +56,7 @@ export function arrMoveTop(arr, index) {
         let _arr = [...arr];
         let moveItem = _arr.splice(index, 1);
         _arr.unshift(...moveItem);
+        return _arr
     } else {
         return arr;
     }
@@ -87,7 +88,7 @@ export function arrMoveBottom(arr, index) {
     if (index !== len) {
         let _arr = [...arr]
         let moveItem = _arr.splice(index, 1)
-        _arr.push(moveItem)
+        _arr.push(...moveItem)
         return _arr
     } else {
         return arr

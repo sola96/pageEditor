@@ -57,8 +57,9 @@ export default {
       set(val) {
         store.commit("REPLACE_COMPONENT_LIST", val);
         if (this.STATE.previewWay && this.STATE.previewWay === "auto") {
-          console.log("111q")
-          this.$emit("refreshPreview"); //replace组件列表后需要重新生成preview
+          this.$nextTick(() => {
+            this.$emit("refreshPreview"); //replace组件列表后需要重新生成preview
+          });
         }
       }
     }

@@ -22,12 +22,14 @@
 const MAX_IMG_SIZE = 2048000; //图片最大限制 1024 * 1000 * 2
 import { common } from "./mixin";
 import { createDom, createHtmlStr } from "../../utils";
+import store from "../../store";
 
 export default {
   mixins: [common],
   data() {
     return {
       /** @property {Object} in_itemData mixin中的in_itemData*/
+      STATE: store.state,
       originImgData: null, //数据原始数据
       isFold: false, //是否处于折叠状态
       src: "",
@@ -46,6 +48,12 @@ export default {
       // file.length > 0 && Object.assign(this.$data, this.$options.data());
       reader.onload = () => {
         this.src = reader.result;
+        if (this.STATE.previewWay && this.STATE.previewWay === "auto") {
+          store.commit("SET_PREVIEW_DATA", {
+            index: this.index,
+            data: this.getSelfHtmlStr()
+          });
+        }
       };
       if (imgData && (imgData = imgData[0])) {
         if (!/image/.test(imgData.type)) {
@@ -128,8 +136,7 @@ export default {
       };
       this.$emit("setControlData", { type: this.itemData.type, data });
     },
-    //渲染,父组件会派发component:render事件，该render函数为component:render事件的回调
-    render(previewData) {
+    getSelfHtmlStr() {
       let nodeObj = {
         tag: "img",
         attrs: {
@@ -139,7 +146,11 @@ export default {
           width: "100%"
         }
       };
-      previewData[this.index] = createHtmlStr(nodeObj);
+      return createHtmlStr(nodeObj);
+    },
+    //渲染,父组件会派发component:render事件，该render函数为component:render事件的回调
+    render(previewData) {
+      previewData[this.index] = this.getSelfHtmlStr();
     }
   },
 
