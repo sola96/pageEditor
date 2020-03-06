@@ -193,6 +193,7 @@ export default {
       this.STATE.componentsList.forEach(item => {
         this.$refs[item.id][0].render(previewData);
       });
+      store.commit("REPALCE_PREVIEW_DATA", previewData);
     }
   },
   mounted() {

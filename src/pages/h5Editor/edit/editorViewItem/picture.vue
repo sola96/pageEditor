@@ -21,6 +21,8 @@
 <script>
 const MAX_IMG_SIZE = 2048000; //图片最大限制 1024 * 1000 * 2
 import { common } from "./mixin";
+import { createDom, createHtmlStr } from "../../utils";
+
 export default {
   mixins: [common],
   data() {
@@ -128,8 +130,16 @@ export default {
     },
     //渲染,父组件会派发component:render事件，该render函数为component:render事件的回调
     render(previewData) {
-      console.log("ppppppppp")
-      previewData[this.index] = this.index;
+      let nodeObj = {
+        tag: "img",
+        attrs: {
+          src: this.src
+        },
+        style: {
+          width: "100%"
+        }
+      };
+      previewData[this.index] = createHtmlStr(nodeObj);
     }
   },
 

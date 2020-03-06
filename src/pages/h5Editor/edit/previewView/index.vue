@@ -7,17 +7,21 @@
         <el-tooltip
           class="item"
           effect="dark"
-          :content="autoRefresh?'在编辑器更改元素时会自动刷新预览视图，点击切换到<手动预览>':'使用快捷键 Alt + 1 可刷新预览视图，点击切换到<自动预览>'"
+          :content="STATE.previewWay==='auto'?'在编辑器更改元素时会自动刷新预览视图，点击切换到<手动预览>':'使用快捷键 Alt + 1 可刷新预览视图，点击切换到<自动预览>'"
           placement="top"
         >
-          <span @click="toggleRefreshWay">
+          <span @click="togglePreviewWay">
             <i class="el-icon-refresh"></i>
-            <span>{{autoRefresh?'自动预览':'Alt + 1 预览'}}</span>
+            <span>{{STATE.previewWay==='auto'?'自动预览':'Alt + 1 预览'}}</span>
           </span>
         </el-tooltip>
       </div>
     </div>
-    <div class="content"></div>
+    <div class="content">
+      <ul>
+        <li v-for="item in previewData_filter" :key="item.id" v-html="item.htmlStr"></li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -28,21 +32,37 @@ import directives from "../../directives";
 export default {
   data() {
     return {
-      STATE: store.state,
-      autoRefresh: false
+      STATE: store.state
     };
+  },
+  computed: {
+    previewData_filter() {
+      return this.STATE.previewData.filter(item => item);
+    }
   },
   directives: {
     drag: directives.drag,
     stick: directives.stick
   },
   methods: {
-    toggleRefreshWay() {
-      this.autoRefresh = !this.autoRefresh;
-      this.$emit("refreshPreview")
+    togglePreviewWay() {
+      if (this.STATE.previewWay === "manual") {
+        store.commit("TOGGLE_PREVIEW_WAY", "auto");
+        this.$emit("refreshPreview");
+      } else {
+        store.commit("TOGGLE_PREVIEW_WAY", "manual");
+      }
+      // this.$emit("refreshPreview");
     }
   },
-  mounted() {}
+  mounted() {
+    this.$emit("refreshPreview");
+    store.commit("TOGGLE_PREVIEW_WAY", "manual");
+  },
+  beforeDestroy() {
+    store.commit("REPALCE_PREVIEW_DATA", []);
+    store.commit("TOGGLE_PREVIEW_WAY", null);
+  }
 };
 </script>
 
@@ -95,6 +115,7 @@ export default {
   .content {
     width: 100%;
     height: 70vh;
+    overflow-y: scroll;
   }
 }
 </style>

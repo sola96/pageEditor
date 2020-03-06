@@ -25,7 +25,7 @@
     <!-- 以下为扩展视图 -->
     <!--排序面板：组件排序视图 -->
     <div class="extend component-sort-view" v-if="extendView.componentSortView">
-      <component-sort-view></component-sort-view>
+      <component-sort-view @refreshPreview="refreshPreview"></component-sort-view>
     </div>
     <!-- 预览视图 -->
     <div class="extend preview-view" v-if="extendView.previewView">
@@ -42,6 +42,8 @@ import extendControlBar from "./extendControlBar";
 import componentSortView from "./componentSortView/index";
 import previewView from "./previewView/index";
 import store from "../store";
+import { getRandomStr } from "../utils";
+
 export default {
   components: {
     ownerTemplate,
@@ -72,11 +74,8 @@ export default {
         setDataFn && setDataFn(data);
       }
     },
-    getRandomStr() {
-      return Math.random() + Math.random().toString(32);
-    },
     pushComponentsList(item) {
-      item.id = this.getRandomStr();
+      item.id = getRandomStr();
       item.label = item.label + String(this.itemCount++);
       store.commit("ADD_ITEM", item);
     },
