@@ -1,10 +1,9 @@
-import controlView from "../controlView";
+import store from "../../store";
 
 export const common = {
-    components: { controlView },
     data() {
         return {
-            in_itemData: {}//组件内部的itemData
+            in_itemData: {},//组件内部的itemData
         }
     },
     props: {
@@ -45,6 +44,14 @@ export const common = {
         },
         getSelfHtmlStr() {
             console.error(`<${this.itemData.type}>组件缺少getSelfHtmlStr函数，需要实现一个 'getSelfHtmlStr' 函数`)
+        },
+        refreshPreview() {
+            if (this.STATE.previewWay && this.STATE.previewWay === "auto") {
+                store.commit("SET_PREVIEW_DATA", {
+                    index: this.index,
+                    data: this.getSelfHtmlStr()
+                });
+            }
         },
         //渲染当前组件
         render(previewData) {

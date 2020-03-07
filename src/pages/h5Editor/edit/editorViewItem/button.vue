@@ -24,7 +24,35 @@ export default {
   },
   methods: {
     getSelfHtmlStr() {
-      return null;
+      let obj = {
+        tag: "div",
+        style: {
+          width: "100%",
+          display: "flex",
+          borderRadius: "2px",
+          overflow: "hidden",
+          userSelect: "none"
+        },
+        children: []
+      };
+      obj.children = this.btns.map((item, index) => ({
+        tag: "button",
+        text: item.text,
+        style: {
+          ...item.style,
+          width: "1px",
+          flex: "1",
+          height: "36px",
+          boxSizing: "border-box",
+          padding: "0 8px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          border: "none",
+          marginLeft: index > 0 ? "1px" : "0"
+        }
+      }));
+      return createHtmlStr(obj);
     },
     setControlData() {
       let _this = this;
@@ -43,11 +71,17 @@ export default {
     this.btns = Array(this.in_itemData.config.num)
       .fill(null)
       .map(i => ({
-        style: {},
+        style: {
+          color: "#606266",
+          backgroundColor: "rgb(240, 240, 240)",
+          fontSize: "14px"
+        },
         text: "按钮",
         url: ""
       }));
-    console.log(this.btns);
+  },
+  mounted() {
+    this.refreshPreview();
   }
 };
 </script>
@@ -67,6 +101,7 @@ export default {
     display: flex;
     border-radius: 2px;
     overflow: hidden;
+    user-select: none;
     & > li {
       width: 1px;
       flex: 1;
@@ -81,9 +116,6 @@ export default {
         text-align: center;
         line-height: 36px;
         @include no-wrap;
-        font-size: 14px;
-        color: $color-text;
-        background-color: rgb(240, 240, 240);
       }
     }
   }

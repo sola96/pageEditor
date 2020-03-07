@@ -25,7 +25,7 @@ export function getRandomStr() {
 export function createDom(obj) {
     let dom = null;
     try {
-        let { tag = "div", style = [], attrs = [], children } = obj;
+        let { tag = "div", style = [], attrs = [], children, text } = obj;
         dom = document.createElement(tag);
         Object.keys(style).forEach(key => {
             dom.style[key] = style[key];
@@ -33,6 +33,9 @@ export function createDom(obj) {
         Object.keys(attrs).forEach(key => {
             dom.setAttribute(key, attrs[key]);
         })
+        if (text) {
+            dom.innerText = text
+        }
         if (children && children.length > 0) {
             children.forEach(item => {
                 dom.appendChild(createDom(item));

@@ -3,7 +3,7 @@
   <div class="editor-view_button">
     <ul>
       <li v-for="(item,index) in in_data.btns" :key="index">
-        <input type="text" v-model="item.text" placeholder="按钮文字" />
+        <el-input type="text" label="按钮文本" v-model="item.text" placeholder="请输入"></el-input>
       </li>
     </ul>
   </div>

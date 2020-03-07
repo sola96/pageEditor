@@ -48,12 +48,7 @@ export default {
       // file.length > 0 && Object.assign(this.$data, this.$options.data());
       reader.onload = () => {
         this.src = reader.result;
-        if (this.STATE.previewWay && this.STATE.previewWay === "auto") {
-          store.commit("SET_PREVIEW_DATA", {
-            index: this.index,
-            data: this.getSelfHtmlStr()
-          });
-        }
+        this.refreshPreview();
       };
       if (imgData && (imgData = imgData[0])) {
         if (!/image/.test(imgData.type)) {
