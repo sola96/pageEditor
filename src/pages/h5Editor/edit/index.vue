@@ -16,6 +16,7 @@
       <!-- 编辑面板：组件控制器视图 -->
       <div class="control-view">
         <control-picture ref="control-picture" v-show="currentControlType==='picture'"></control-picture>
+        <control-button ref="control-button" v-show="currentControlType==='button'"></control-button>
       </div>
     </div>
     <!-- 扩展控制 控制扩展视图的显示隐藏以及其他一些设置项-->
@@ -38,6 +39,7 @@
 import ownerTemplate from "./ownerTemplate";
 import editorView from "./editorView";
 import controlPicture from "./controlViewItem/picture";
+import controlButton from "./controlViewItem/button";
 import extendControlBar from "./extendControlBar";
 import componentSortView from "./componentSortView/index";
 import previewView from "./previewView/index";
@@ -49,6 +51,7 @@ export default {
     ownerTemplate,
     editorView,
     controlPicture,
+    controlButton,
     extendControlBar,
     componentSortView,
     previewView

@@ -186,11 +186,6 @@ export default {
         }
       },
       immediate: true
-    },
-    isActive(newVal) {
-      if (newVal) {
-        this.setControlData();
-      }
     }
   }
 };

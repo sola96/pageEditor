@@ -1,6 +1,6 @@
 <template>
   <!-- 编辑器视图 -->
-  <div class="editor-view" @click="cancelSelect">
+  <div class="editor-view" ref="editorView" @click="cancelSelect">
     <div class="content" ref="content" @click.stop>
       <transition-group tag="ul" class="content-list" name="content-list">
         <li
@@ -202,17 +202,19 @@ export default {
   mounted() {
     let self = this;
     this.keydownEvent = e => {
-      if (e.keyCode === 8) {
+      if (
+        e.keyCode === 8 && //按下删除键
+        e.target.tagName === "BODY" && //在body上按下删除键（避免input等内容中的删除键冲突）
+        self.STATE.currentActiveItemIdx > -1
+      ) {
         //删除
-        if (self.STATE.currentActiveItemIdx > -1) {
-          self.deleteItem(self.STATE.currentActiveItemIdx);
-        }
+        self.deleteItem(self.STATE.currentActiveItemIdx);
       }
     };
     document.addEventListener("keydown", this.keydownEvent);
   },
   beforeDestroy() {
-    document.removeEventListener("onkeydown", this.keydownEvent);
+    document.removeEventListener("keydown", this.keydownEvent);
   }
 };
 </script>

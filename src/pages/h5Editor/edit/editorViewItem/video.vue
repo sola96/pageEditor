@@ -71,13 +71,6 @@ export default {
     render(previewData) {
       previewData[this.index] = this.getSelfHtmlStr();
     }
-  },
-  watch: {
-    isActive(newVal) {
-      if (newVal) {
-        this.setControlData();
-      }
-    }
   }
 };
 </script>

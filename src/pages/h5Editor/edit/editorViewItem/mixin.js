@@ -40,6 +40,8 @@ export const common = {
         //设置控制器视图
         setControlData() {
             console.error(`<${this.itemData.type}>组件缺少setControlData函数，需要实现一个 'setControlData' 函数`)
+            this.$emit("setControlData", { type: "", data: null });
+            // this.$emit("setControlData", { type: this.itemData.type, data });
         },
         getSelfHtmlStr() {
             console.error(`<${this.itemData.type}>组件缺少getSelfHtmlStr函数，需要实现一个 'getSelfHtmlStr' 函数`)
@@ -55,5 +57,12 @@ export const common = {
     },
     created() {
         this.in_itemData = Object.assign({}, this.itemData);
+    },
+    watch: {
+        isActive(newVal) {
+            if (newVal) {
+                this.setControlData();
+            }
+        }
     }
 }
