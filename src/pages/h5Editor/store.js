@@ -111,7 +111,14 @@ const store = {
         },
         //替换预览的数据
         REPALCE_PREVIEW_DATA(state, previewData) {
-            state.previewData = previewData;
+            if (state.previewWay && state.previewWay === "manual" && previewData.length > 0) {
+                setTimeout(() => {
+                    state.previewData = previewData;
+                }, 500)
+
+            } else {
+                state.previewData = previewData;
+            }
         },
         //设置预览数据
         SET_PREVIEW_DATA(state, { index, data }) {

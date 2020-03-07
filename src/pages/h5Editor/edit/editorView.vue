@@ -188,6 +188,9 @@ export default {
       this.closeRightClickMenu();
     },
     //获取预览视图的数据
+    //该方法由父组件调用
+    //在“手动刷新” 或 在排序窗口操作后会调用该方法
+    //该方法会重新生成previewData，数据量大的情况下比较消耗性能
     getPreviewData() {
       let previewData = new Array(this.STATE.componentsList.length).fill(null);
       this.STATE.componentsList.forEach(item => {

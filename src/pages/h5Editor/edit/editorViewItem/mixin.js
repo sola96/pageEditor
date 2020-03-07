@@ -39,15 +39,18 @@ export const common = {
         },
         //设置控制器视图
         setControlData() {
-            console.error("需要设置一个 'setControlData' 函数")
+            console.error(`<${this.itemData.type}>组件缺少setControlData函数，需要实现一个 'setControlData' 函数`)
+        },
+        getSelfHtmlStr() {
+            console.error(`<${this.itemData.type}>组件缺少getSelfHtmlStr函数，需要实现一个 'getSelfHtmlStr' 函数`)
         },
         //渲染当前组件
-        render() {
-            console.error("需要设置一个 'render' 函数")
+        render(previewData) {
+            previewData[this.index] = this.getSelfHtmlStr();
         },
         //提交
         submit() {
-            console.error("需要设置一个 'submit' 函数")
+            console.error(`<${this.itemData.type}>组件缺少submit函数，需要实现一个 'submit' 函数`)
         }
     },
     created() {

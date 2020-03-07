@@ -67,6 +67,7 @@ export default {
     };
   },
   methods: {
+    //设置控制器视图
     setControlData({ type, data }) {
       this.currentControlType = type;
       if (data) {
@@ -74,11 +75,13 @@ export default {
         setDataFn && setDataFn(data);
       }
     },
+    //添加组件item
     pushComponentsList(item) {
       item.id = getRandomStr();
       item.label = item.label + String(this.itemCount++);
       store.commit("ADD_ITEM", item);
     },
+    //添加图片
     handler_add_picture({ type, config, label }) {
       let item = {
         type,
@@ -87,7 +90,9 @@ export default {
       };
       this.pushComponentsList(item);
     },
+    //添加富文本
     handler_add_richText({ type, config, label }) {},
+    //添加视频
     handler_add_video({ type, config, label }) {
       let item = {
         type,
@@ -96,13 +101,20 @@ export default {
       };
       this.pushComponentsList(item);
     },
+    //添加表单
     handler_add_form({ type, config, label }) {
       console.log("添加表单", config.name);
     },
+    //添加按钮
     handler_add_button({ type, config, label }) {
-      console.log("添加按钮", config.name);
+      let item = {
+        type,
+        config,
+        label: config.name
+      };
+      this.pushComponentsList(item);
     },
-    //添加components
+    //执行添加操作的回调，根据type执行对应的函数
     addComponents(data) {
       let handler = this[`handler_add_${data.type}`];
       if (handler) {

@@ -75,20 +75,30 @@ export default {
             {
               label: "单个按钮",
               config: {
-                name: "单个按钮"
+                name: "单个按钮",
+                num: 1
               }
             },
             {
               label: "两个按钮",
-              config: { name: "2个按钮" }
+              config: {
+                name: "两个按钮",
+                num: 2
+              }
             },
             {
               label: "三个按钮",
-              config: { name: "3个按钮" }
+              config: {
+                name: "三个按钮",
+                num: 3
+              }
             },
             {
               label: "四个按钮",
-              config: { name: "4个按钮" }
+              config: {
+                name: "四个按钮",
+                num: 4
+              }
             }
           ]
         }

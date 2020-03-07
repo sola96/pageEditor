@@ -137,6 +137,7 @@ export default {
       this.$emit("setControlData", { type: this.itemData.type, data });
     },
     getSelfHtmlStr() {
+      if (!this.src) return null;
       let nodeObj = {
         tag: "img",
         attrs: {

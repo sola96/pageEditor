@@ -17,7 +17,7 @@
         </el-tooltip>
       </div>
     </div>
-    <div class="content">
+    <div class="content" v-loading="manualLoading">
       <ul>
         <li v-for="item in previewData_filter" :key="item.id" v-html="item.htmlStr"></li>
       </ul>
@@ -32,7 +32,8 @@ import directives from "../../directives";
 export default {
   data() {
     return {
-      STATE: store.state
+      STATE: store.state,
+      manualLoading: false
     };
   },
   computed: {
@@ -48,50 +49,38 @@ export default {
     togglePreviewWay() {
       if (this.STATE.previewWay === "manual") {
         store.commit("TOGGLE_PREVIEW_WAY", "auto");
-        this.$emit("refreshPreview");
+        this.$emit("refreshPreview"); // 切换为自动时候先执行一次刷新，保证视图一致
+        this.removeRefreshKey(); // 切换为自动时候要清除手动快捷键的监听
       } else {
         store.commit("TOGGLE_PREVIEW_WAY", "manual");
+        document.addEventListener("keydown", this.refreshKey); //切换为手动时添加快捷键监听
       }
       // this.$emit("refreshPreview");
+    },
+    removeRefreshKey() {
+      document.removeEventListener("keydown", this.refreshKey);
     }
   },
   mounted() {
     this.$emit("refreshPreview");
-    store.commit("TOGGLE_PREVIEW_WAY", "manual");
-    this.keyCodeMap = {
-      49: false,
-      18: false
+    // store.commit("TOGGLE_PREVIEW_WAY", "manual");
+    this.refreshKey = e => {
+      if (e.repeat) return;
+      // 监听 alt + 1 快捷键，手动切换时用
+      if (e.altKey && e.keyCode === 49) {
+        this.manualLoading = true;
+        this.$emit("refreshPreview");
+        setTimeout(() => {
+          this.manualLoading = false;
+        }, 520);
+      }
     };
-    let self = this;
-    document.addEventListener("keydown", e => {
-      if (e.keyCode === 49) {
-        self.keyCodeMap[49] = true;
-      }
-      if (e.keyCode === 18) {
-        self.keyCodeMap[18] = true;
-      }
-      console.log(self.keyCodeMap)
-      if (
-        self.STATE.previewWay &&
-        self.STATE.previewWay === "manual" &&
-        self.keyCodeMap[18] &&
-        self.keyCodeMap[49]
-      ) {
-        self.$emit("refreshPreview");
-      }
-    });
-    document.addEventListener("keyup", e => {
-      if (e.keyCode === 49) {
-        self.keyCodeMap[49] = false;
-      }
-      if (e.keyCode === 18) {
-        self.keyCodeMap[18] = false;
-      }
-    });
+    this.togglePreviewWay(); //初始化previeWway
   },
   beforeDestroy() {
-    store.commit("REPALCE_PREVIEW_DATA", []);
-    store.commit("TOGGLE_PREVIEW_WAY", null);
+    store.commit("REPALCE_PREVIEW_DATA", []); //清空预览数据
+    store.commit("TOGGLE_PREVIEW_WAY", null); //清空previewWay
+    this.removeRefreshKey(); //移除快捷键监听
   }
 };
 </script>
