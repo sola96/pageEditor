@@ -15,10 +15,10 @@
         <i class="el-icon-document"></i>
         <span>备份</span>
       </li>
-      <li>
+      <!-- <li>
         <i class="el-icon-delete"></i>
         <span>组件回收站</span>
-      </li>
+      </li> -->
       <li
         v-for="item in items"
         :key="item.value"

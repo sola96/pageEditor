@@ -183,6 +183,8 @@ export default {
       z-index: 2;
       height: 100%;
       width: 300px;
+      position: relative;
+      overflow-y: scroll;
       background-color: #fff;
     }
   }

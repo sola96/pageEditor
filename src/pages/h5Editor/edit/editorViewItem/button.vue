@@ -1,7 +1,7 @@
 <template>
   <!-- 按钮 -->
   <div class="editor-view_button" :class="{active:isActive}">
-    <ul class="btn-list">
+    <ul class="btn-list" ref="btnList">
       <li v-for="(item,index) in btns" :key="index">
         <div class="item" :style="item.style">{{item.text}}</div>
       </li>
@@ -62,6 +62,9 @@ export default {
         },
         set btns(value) {
           _this.btns = value;
+        },
+        get refreshPreview() {
+          return _this.refreshPreview;
         }
       };
       this.$emit("setControlData", { type: this.itemData.type, data });
@@ -70,18 +73,21 @@ export default {
   created() {
     this.btns = Array(this.in_itemData.config.num)
       .fill(null)
-      .map(i => ({
+      .map((item, index) => ({
         style: {
           color: "#606266",
           backgroundColor: "rgb(240, 240, 240)",
           fontSize: "14px"
         },
-        text: "按钮",
+        text: "按钮" + (index + 1),
         url: ""
       }));
   },
   mounted() {
     this.refreshPreview();
+    // this.$refs.btnList.addEventListener("DOMSubtreeModified", e => {
+    //   this.refreshPreview()
+    // });
   }
 };
 </script>
