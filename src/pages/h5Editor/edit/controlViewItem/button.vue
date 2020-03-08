@@ -1,13 +1,13 @@
 <template>
   <!-- 按钮 -->
-  <div class="editor-view_button">
+  <div class="control-view_button">
     <ul class="setting-list">
       <li class="setting-item" v-for="(item,index) in in_data.btns" :key="index">
         <div class="title">
           <span>{{`按钮${index+1}`}}</span>
           <div class="line"></div>
         </div>
-        <div class="text">
+        <div class="setting">
           <div class="label">按钮名称</div>
           <el-input
             size="mini"
@@ -19,13 +19,53 @@
             @blur="in_data.refreshPreview"
           ></el-input>
         </div>
-        <div class="color">
+        <div class="setting">
           <div class="label">字体颜色</div>
-          <el-color-picker class="input" size="small" v-model="item.style.color" @change="in_data.refreshPreview"></el-color-picker>
-          <div class="label">背景颜色</div>
-          <el-color-picker class="input" size="small" v-model="item.style.backgroundColor" @change="in_data.refreshPreview"></el-color-picker>
+          <el-color-picker
+            class="input"
+            size="small"
+            v-model="item.style.color"
+            @change="in_data.refreshPreview"
+          ></el-color-picker>
+          <div class="label">字体大小</div>
+          <el-select
+            class="input"
+            size="mini"
+            v-model="item.style.fontSize"
+            @change="in_data.refreshPreview"
+          >
+            <el-option
+              v-for="item in fontSize"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </div>
-        <div class="url">
+        <div class="setting">
+          <div class="label">背景颜色</div>
+          <el-color-picker
+            class="input"
+            size="small"
+            v-model="item.style.backgroundColor"
+            @change="in_data.refreshPreview"
+          ></el-color-picker>
+          <div class="label">对齐方式</div>
+          <el-select
+            class="input"
+            size="mini"
+            v-model="item.style.textAlign"
+            @change="in_data.refreshPreview"
+          >
+            <el-option
+              v-for="item in textAlign"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="setting">
           <div class="label">跳转链接</div>
           <el-input size="mini" class="input" type="text" v-model="item.url"></el-input>
         </div>
@@ -41,7 +81,39 @@ export default {
       in_data: {
         btns: []
       },
-      text: []
+      text: [],
+      textAlign: [
+        {
+          label: "左对齐",
+          value: "left"
+        },
+        {
+          label: "居中",
+          value: "center"
+        },
+        {
+          label: "右对齐",
+          value: "right"
+        }
+      ],
+      fontSize: [
+        {
+          label: "12px",
+          value: "12px"
+        },
+        {
+          label: "14px",
+          value: "14px"
+        },
+        {
+          label: "16px",
+          value: "16px"
+        },
+        {
+          label: "18px",
+          value: "18px"
+        }
+      ]
     };
   },
   methods: {
@@ -55,7 +127,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/assets/variable.scss";
-.editor-view_button {
+.control-view_button {
   width: 100%;
   box-sizing: border-box;
   padding: 0 10px;
@@ -75,9 +147,7 @@ export default {
         border-bottom: 1px solid $color-line;
       }
     }
-    .text,
-    .color,
-    .url {
+    .setting {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -94,5 +164,10 @@ export default {
       }
     }
   }
+}
+</style>
+<style>
+.control-view_button .el-select .el-input__inner {
+  padding: 0 4px !important;
 }
 </style>

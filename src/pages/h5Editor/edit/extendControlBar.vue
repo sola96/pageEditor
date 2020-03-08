@@ -15,10 +15,13 @@
         <i class="el-icon-document"></i>
         <span>备份</span>
       </li>
-      <!-- <li>
+      <li v-popover:componentsRecycle>
         <i class="el-icon-delete"></i>
         <span>组件回收站</span>
-      </li> -->
+        <el-popover ref="componentsRecycle" placement="bottom" width="300" trigger="click">
+          <components-recycle></components-recycle>
+        </el-popover>
+      </li>
       <li
         v-for="item in items"
         :key="item.value"
@@ -33,7 +36,9 @@
 </template>
 
 <script>
+import componentsRecycle from "./componentsRecycle/componentsRecycle";
 export default {
+  components: { componentsRecycle },
   data() {
     return {
       items: [

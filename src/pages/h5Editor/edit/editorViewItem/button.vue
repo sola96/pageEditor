@@ -77,7 +77,8 @@ export default {
         style: {
           color: "#606266",
           backgroundColor: "rgb(240, 240, 240)",
-          fontSize: "14px"
+          fontSize: "14px",
+          textAlign: "center"
         },
         text: "按钮" + (index + 1),
         url: ""

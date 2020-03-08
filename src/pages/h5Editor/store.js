@@ -7,7 +7,12 @@ const store = {
         currentActiveItemIdx: -1, //当前active状态的item索引
         currentActiveItem: { id: "" },
         previewData: [], //预览的数据，在预览视图中显示
-        previewWay: null //预览方式 null:不预览 ；auto:自动预览；manual:手动预览
+        previewWay: null, //预览方式 null:不预览 ；auto:自动预览；manual:手动预览
+        deleteItemCollection: [] //保留删除的组件
+        // itemData: delItem,
+        // componentState,
+        // timestamp: Date.now()
+
     },
     mutations: {
         //设置当前index
@@ -37,6 +42,17 @@ const store = {
                 state.previewData.splice(index, 1);
             }
             return delItem;
+        },
+        //保存删除的组件状态
+        SAVE_DELETE_DATA(state, data) {
+            state.deleteItemCollection.unshift(data);
+            if (state.deleteItemCollection.length > 5) {
+                state.deleteItemCollection.pop();
+            }
+        },
+        //删除deleteData
+        REMOVE_DELETE_DATA(state, index) {
+            state.deleteItemCollection.splice(index, 1)
         },
         //移动到顶部
         MOVE_TOP(state, index) {

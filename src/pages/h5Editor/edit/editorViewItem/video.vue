@@ -1,7 +1,7 @@
 <template>
   <!-- 视频 -->
-  <div class="editor-view_video">
-    <div class="content" :class="{active:isActive}">
+  <div class="editor-view_video" :class="{active:isActive}">
+    <div class="content">
       <span class="label">视频链接:</span>
       <!-- 这里的input要阻止mouseup和oncontextmenu事件的传递，因为用户可能进行粘贴 -->
       <input
@@ -81,12 +81,16 @@ export default {
   width: 100%;
   box-sizing: border-box;
   padding: 10px;
+  border: 1px solid transparent;
+  &.active {
+    border-color: $color-theme;
+  }
   & > .content {
     box-sizing: border-box;
-    padding: 10px;
     display: flex;
     align-items: center;
     background-color: $color-theme;
+    padding: 10px;
     border-radius: 2px;
     box-shadow: 0 0 10px rgba($color: #000000, $alpha: 0.2);
     .label {

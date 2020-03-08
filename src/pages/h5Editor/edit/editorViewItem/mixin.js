@@ -65,6 +65,15 @@ export const common = {
     created() {
         this.in_itemData = Object.assign({}, this.itemData);
     },
+    mounted() {
+        let deleteItemCollection = store.state.deleteItemCollection;
+        let n = deleteItemCollection.findIndex(item => item.itemData.id === this.itemData.id);
+        if (n > -1) {
+            Object.assign(this.$data, deleteItemCollection[n].componentState);
+            store.commit("REMOVE_DELETE_DATA", n);
+            this.refreshPreview();
+        }
+    },
     watch: {
         isActive(newVal) {
             if (newVal) {

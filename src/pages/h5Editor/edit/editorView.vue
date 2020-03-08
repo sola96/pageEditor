@@ -85,7 +85,15 @@ export default {
   methods: {
     //删除
     deleteItem(index) {
+      let id = this.STATE.componentsList[index].id;
+      let componentState = this.$refs[id][0].$data;
+      delete componentState.STATE;
       let delItem = store.commit("DELETE_ITEM", index);
+      store.commit("SAVE_DELETE_DATA", {
+        itemData: delItem[0],
+        componentState,
+        timestamp: Date.now()
+      });
       //删除组件的同时要删除该组件之前注册的菜单选项
       if (this.rightClickMenuData.additionMenu[delItem.id]) {
         delete this.rightClickMenuData.additionMenu[delItem.id];
