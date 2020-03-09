@@ -94,7 +94,14 @@ export default {
       this.pushComponentsList(item);
     },
     //添加富文本
-    handler_add_richText({ type, config, label }) {},
+    handler_add_richText({ type, config, label }) {
+      let item = {
+        type,
+        config,
+        label
+      };
+      this.pushComponentsList(item);
+    },
     //添加视频
     handler_add_video({ type, config, label }) {
       let item = {

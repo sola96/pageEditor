@@ -13,6 +13,7 @@
 import { common } from "./mixin";
 import { createHtmlStr } from "../../utils";
 import store from "../../store";
+
 export default {
   mixins: [common],
   data() {
