@@ -21,7 +21,7 @@
     </div>
     <!-- 扩展控制 控制扩展视图的显示隐藏以及其他一些设置项-->
     <div class="extend-control-bar">
-      <extend-control-bar :extendView.sync="extendView"></extend-control-bar>
+      <extend-control-bar :extendView.sync="extendView" @backup="backup"></extend-control-bar>
     </div>
     <!-- 以下为扩展视图 -->
     <!--排序面板：组件排序视图 -->
@@ -32,6 +32,7 @@
     <div class="extend preview-view" v-if="extendView.previewView">
       <preview-view @refreshPreview="refreshPreview"></preview-view>
     </div>
+    <div class="toast" v-show="STATE.toastMsg">{{STATE.toastMsg}}</div>
   </div>
 </template>
 
@@ -134,6 +135,9 @@ export default {
     //刷新预览视图
     refreshPreview() {
       this.$refs.editorView.getPreviewData();
+    },
+    backup() {
+      this.$refs.editorView.backup();
     }
   }
 };
@@ -202,6 +206,33 @@ export default {
     z-index: 2;
   }
   & > .extend {
+  }
+  & > .toast {
+    padding: 10px;
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    width: 200px;
+    margin-left: -100px;
+    text-align: center;
+    background-color: rgba($color: #000000, $alpha: 0.8);
+    color: #fff;
+    border-radius: 4px;
+    transition: 0.3s;
+    animation: toast-enter 0.3s;
+    z-index: 10;
+    font-size: 14px;
+  }
+
+  @keyframes toast-enter {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.6);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 }
 </style>

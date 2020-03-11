@@ -1,5 +1,7 @@
 import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from "./utils"
 
+let toastTimer = null
+
 const store = {
     state: {
         ownerTemplateShow: false, //“我的推广页”显示
@@ -8,13 +10,24 @@ const store = {
         currentActiveItem: { id: "" },
         previewData: [], //预览的数据，在预览视图中显示
         previewWay: null, //预览方式 null:不预览 ；auto:自动预览；manual:手动预览
-        deleteItemCollection: [] //保留删除的组件
-        // itemData: delItem,
-        // componentState,
-        // timestamp: Date.now()
+        deleteItemCollection: [], //保留删除的组件
+        /**
+         * itemData: delItem,
+         * componentState:{},
+         * timestamp: Date.now()
+         * html:{id:"",htmlStr:""} 
+         */
+        toastMsg: ""
 
     },
     mutations: {
+        TOAST(state, msg) {
+            state.toastMsg = msg;
+            toastTimer && clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                state.toastMsg = ""
+            }, 1500)
+        },
         //设置当前index
         SET_CURIDX(state, index) {
             state.currentActiveItemIdx = index;
@@ -52,7 +65,7 @@ const store = {
         },
         //删除deleteData
         REMOVE_DELETE_DATA(state, index) {
-            state.deleteItemCollection.splice(index, 1)
+            state.deleteItemCollection.splice(index, 1);
         },
         //移动到顶部
         MOVE_TOP(state, index) {
@@ -107,7 +120,7 @@ const store = {
             state.componentsList = arrMoveLower(state.componentsList, index);
             state.currentActiveItemIdx = nextIdx;
             if (state.previewWay && state.previewWay === "auto") {
-                state.previewData = arrMoveLower(state.previewData, index)
+                state.previewData = arrMoveLower(state.previewData, index);
             }
             return nextIdx;
         },
@@ -140,6 +153,26 @@ const store = {
         SET_PREVIEW_DATA(state, { index, data }) {
             state.previewData[index] = data;
             state.previewData = [...state.previewData];
+        },
+        //备份数据
+        //备份数据在indexDB数据库中
+        SET_BACKUP(state, data) {
+            console.log(data);
+            let db = null;
+            let dbRequest = window.indexedDB.open("editorBackup", 1);
+            dbRequest.onsuccess = e => dbRequest.result;
+            dbRequest.onupgradeneeded = e => {
+                console.log(e)
+                db = e.target.result;
+                if (!db.objectStoreNames.contains("backup")) {
+                    db.createObjectStore("backup", { autoIncrement: true });
+                }
+            }
+        },
+        //查询备份
+        //根据id查询备份的数据
+        SEARCH_BACKUP(state, id) {
+
         }
     },
     actions: {

@@ -27,6 +27,8 @@
 
 <script>
 import store from "../../store";
+import { getTime } from "../../utils";
+
 export default {
   data() {
     return {
@@ -36,11 +38,7 @@ export default {
     };
   },
   filters: {
-    getTime(val) {
-      let date = new Date(val);
-      let trans = n => `${n < 10 ? "0" : ""}${n}`;
-      return `${trans(date.getHours())}:${trans(date.getMinutes())}`;
-    }
+    getTime
   },
   methods: {
     setCurrentHtml(item) {

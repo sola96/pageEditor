@@ -11,9 +11,12 @@
         <i class="el-icon-upload"></i>
         <span>保存</span>
       </li>
-      <li class="backup">
+      <li class="backup" v-popover:componentBackup>
         <i class="el-icon-document"></i>
         <span>备份</span>
+        <el-popover ref="componentBackup" placement="bottom" width="300" trigger="click">
+          <component-backup v-on="$listeners"></component-backup>
+        </el-popover>
       </li>
       <li v-popover:componentsRecycle>
         <i class="el-icon-delete"></i>
@@ -37,8 +40,9 @@
 
 <script>
 import componentsRecycle from "./componentsRecycle/componentsRecycle";
+import componentBackup from "./backup/backup";
 export default {
-  components: { componentsRecycle },
+  components: { componentsRecycle, componentBackup },
   data() {
     return {
       items: [

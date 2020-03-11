@@ -59,7 +59,7 @@ export function arrMoveTop(arr, index) {
         let _arr = [...arr];
         let moveItem = _arr.splice(index, 1);
         _arr.unshift(...moveItem);
-        return _arr
+        return _arr;
     } else {
         return arr;
     }
@@ -81,19 +81,25 @@ export function arrMoveLower(arr, index) {
         let curIdx = index;
         let nextIdx = index + 1;
         [_arr[curIdx], _arr[nextIdx]] = [_arr[nextIdx], _arr[curIdx]];
-        return _arr
+        return _arr;
     } else {
-        return arr
+        return arr;
     }
 }
 export function arrMoveBottom(arr, index) {
     let len = arr.length - 1;
     if (index !== len) {
-        let _arr = [...arr]
-        let moveItem = _arr.splice(index, 1)
-        _arr.push(...moveItem)
-        return _arr
+        let _arr = [...arr];
+        let moveItem = _arr.splice(index, 1);
+        _arr.push(...moveItem);
+        return _arr;
     } else {
-        return arr
+        return arr;
     }
+}
+
+export function getTime(val) {
+    let date = new Date(val);
+    let trans = n => `${n < 10 ? "0" : ""}${n}`;
+    return `${trans(date.getHours())}:${trans(date.getMinutes())}`;
 }

@@ -38,12 +38,13 @@ export const common = {
         },
         //设置控制器视图
         setControlData() {
-            console.error(`<${this.itemData.type}>组件缺少setControlData函数，需要实现一个 'setControlData' 函数`)
+            console.error(`<${this.itemData.type}>组件缺少setControlData函数，需要实现一个 'setControlData' 函数`);
             this.$emit("setControlData", { type: "", data: null });
             // this.$emit("setControlData", { type: this.itemData.type, data });
         },
         getSelfHtmlStr() {
-            console.error(`<${this.itemData.type}>组件缺少getSelfHtmlStr函数，需要实现一个 'getSelfHtmlStr' 函数`)
+            console.error(`<${this.itemData.type}>组件缺少getSelfHtmlStr函数，需要实现一个 'getSelfHtmlStr' 函数`);
+            return null;
         },
         refreshPreview() {
             if (this.STATE.previewWay && this.STATE.previewWay === "auto") {
@@ -59,7 +60,14 @@ export const common = {
         },
         //提交
         submit() {
-            console.error(`<${this.itemData.type}>组件缺少submit函数，需要实现一个 'submit' 函数`)
+            console.error(`<${this.itemData.type}>组件缺少submit函数，需要实现一个 'submit' 函数`);
+        },
+        //备份
+        backup() {
+            let selfState = JSON.parse(JSON.stringify(this.$data));
+            delete selfState.STATE;
+            delete selfState.in_itemData;
+            return selfState;
         }
     },
     created() {

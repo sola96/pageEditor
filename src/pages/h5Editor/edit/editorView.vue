@@ -97,7 +97,7 @@ export default {
         itemData: delItem[0],
         timestamp: Date.now()
       });
-      console.log(html)
+      console.log(html);
       //删除组件的同时要删除该组件之前注册的菜单选项
       if (this.rightClickMenuData.additionMenu[delItem.id]) {
         delete this.rightClickMenuData.additionMenu[delItem.id];
@@ -204,11 +204,24 @@ export default {
     //在“手动刷新” 或 在排序窗口操作后会调用该方法
     //该方法会重新生成previewData，数据量大的情况下比较消耗性能
     getPreviewData() {
-      let previewData = new Array(this.STATE.componentsList.length).fill(null);
+      let previewData = Array(this.STATE.componentsList.length).fill(null);
       this.STATE.componentsList.forEach(item => {
         this.$refs[item.id][0].render(previewData);
       });
       store.commit("REPALCE_PREVIEW_DATA", previewData);
+    },
+    //备份
+    //该方法由父组件调用
+    //自动备份时间到了或快捷键ctrl+s，会调用该函数
+    backup() {
+      let backupData = this.STATE.componentsList.map((item, index) => {
+        return {
+          itemData: item,
+          componentState: this.$refs[item.id][0].backup(),
+          timestamp: Date.now()
+        };
+      });
+      store.commit("SET_BACKUP", backupData);
     }
   },
   mounted() {
