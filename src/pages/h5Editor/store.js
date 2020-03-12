@@ -1,4 +1,4 @@
-import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from "./utils"
+import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom, getRandomStr } from "./utils"
 
 let toastTimer = null
 
@@ -17,8 +17,11 @@ const store = {
          * timestamp: Date.now()
          * html:{id:"",htmlStr:""} 
          */
-        toastMsg: ""
-
+        toastMsg: "",
+        idMap: {
+            activityId: "",
+            pageConfigId: ""
+        }
     },
     mutations: {
         TOAST(state, msg) {
@@ -27,6 +30,14 @@ const store = {
             toastTimer = setTimeout(() => {
                 state.toastMsg = ""
             }, 1500)
+        },
+        SET_ID_MAP(state, { activityId, pageConfigId }) {
+            if (activityId) {
+                state.idMap.activityId = activityId;
+            }
+            if (pageConfigId) {
+                state.idMap.pageConfigId = pageConfigId;
+            }
         },
         //设置当前index
         SET_CURIDX(state, index) {
@@ -157,17 +168,8 @@ const store = {
         //备份数据
         //备份数据在indexDB数据库中
         SET_BACKUP(state, data) {
-            console.log(data);
-            let db = null;
-            let dbRequest = window.indexedDB.open("editorBackup", 1);
-            dbRequest.onsuccess = e => dbRequest.result;
-            dbRequest.onupgradeneeded = e => {
-                console.log(e)
-                db = e.target.result;
-                if (!db.objectStoreNames.contains("backup")) {
-                    db.createObjectStore("backup", { autoIncrement: true });
-                }
-            }
+            if (!(data && data.length > 0)) return;
+            
         },
         //查询备份
         //根据id查询备份的数据

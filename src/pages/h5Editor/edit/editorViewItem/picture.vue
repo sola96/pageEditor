@@ -162,8 +162,8 @@ export default {
               value: ""
             },
             {
-              label: "收起图片",
-              command: "fold",
+              label: this.isFold ? "展开图片" : "收起图片",
+              command: this.isFold ? "spread" : "fold",
               value: ""
             }
           ];

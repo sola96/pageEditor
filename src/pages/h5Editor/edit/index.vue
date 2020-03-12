@@ -139,6 +139,12 @@ export default {
     backup() {
       this.$refs.editorView.backup();
     }
+  },
+  created() {
+    store.commit("SET_ID_MAP", {
+      activityId: this.$route.activityId,
+      pageConfigId: this.$route.pageConfigId
+    });
   }
 };
 </script>
