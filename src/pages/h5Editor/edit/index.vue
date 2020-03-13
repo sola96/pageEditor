@@ -142,8 +142,10 @@ export default {
   },
   created() {
     store.commit("SET_ID_MAP", {
-      activityId: this.$route.activityId,
-      pageConfigId: this.$route.pageConfigId
+      activityId: "test1",
+      pageConfigId: "ajskbdkqjww1"
+      // activityId: this.$route.query.activityId,
+      // pageConfigId: this.$route.query.pageConfigId
     });
   }
 };

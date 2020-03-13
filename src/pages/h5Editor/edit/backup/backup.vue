@@ -73,7 +73,6 @@ export default {
       if (e.keyCode === 83 && e.ctrlKey) {
         e.preventDefault();
         this.saveTsak();
-        store.commit("TOAST", "当前编辑器数据已保存");
       }
     });
   }

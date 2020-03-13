@@ -13,10 +13,10 @@ function openDB() {
             dbRequest.onupgradeneeded = e => {
                 db = e.target.result;
                 if (!db.objectStoreNames.contains("config")) {
-                    db.createObjectStore("backup", { keyPath: "pageConfigId" });
+                    db.createObjectStore("config", { keyPath: "pageConfigId" });
                 }
                 if (!db.objectStoreNames.contains("activity_config")) {
-                    db.createObjectStore("backup", { keyPath: "activityId" });
+                    db.createObjectStore("activity_config", { keyPath: "activityId" });
                 }
                 resolve(db)
             }
@@ -38,7 +38,7 @@ function $get(table, key, fn) {
                 var request = store.get(key);
                 request.onsuccess = e => {
                     fn(e.target.result)
-                };
+                }
             }
         )
 }
@@ -55,18 +55,18 @@ function $add(table, data) {
 }
 
 function $put(table, value) {
-    openDB()
-        .then(
-            db => {
-                let transaction = db.transaction(table, 'readwrite');
-                let store = transaction.objectStore(table);
-                store.put(value)
-            }
-        )
+    return openDB().then(
+        db => {
+            let transaction = db.transaction(table, 'readwrite');
+            let store = transaction.objectStore(table);
+            store.put(value)
+            return Promise.resolve()
+        }
+    )
 }
 
 function $delete(table, key) {
 
 }
 
-export default { $get, $put, $delete }
+export default { $get, $put, $delete, $add }

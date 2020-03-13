@@ -1,4 +1,5 @@
 import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom, getRandomStr } from "./utils"
+import db from "./indexDB"
 
 let toastTimer = null
 
@@ -167,14 +168,35 @@ const store = {
         },
         //备份数据
         //备份数据在indexDB数据库中
-        SET_BACKUP(state, data) {
-            if (!(data && data.length > 0)) return;
-            
+        SET_BACKUP(state, components) {
+            if (!(components && components.length > 0)) return;
+            let activityId = state.idMap.activityId || "default_activity"
+            let pageConfigId = state.idMap.pageConfigId || activityId + "_default_config"
+            db.$put("config", {
+                pageConfigId,
+                components,
+                timestamp: Date.now()
+            }).then(db.$get("activity_config", activityId, res => {
+                if (!res) {
+                    res = {
+                        activityId,
+                        pageConfigIds: []
+                    }
+                }
+                if (!res.pageConfigIds.includes(pageConfigId)) {
+                    res.pageConfigIds.push(pageConfigId)
+                    db.$put("activity_config", res)
+                }
+                state.toastMsg = "当前编辑器数据已保存"
+                setTimeout(() => {
+                    state.toastMsg = ""
+                }, 1000)
+            }))
         },
         //查询备份
         //根据id查询备份的数据
         SEARCH_BACKUP(state, id) {
-
+            db.$put()
         }
     },
     actions: {
