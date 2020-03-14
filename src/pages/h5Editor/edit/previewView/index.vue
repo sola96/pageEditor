@@ -18,6 +18,7 @@
       </div>
     </div>
     <div class="content" v-loading="manualLoading">
+      <iphonex></iphonex>
       <ul>
         <li v-for="item in previewData_filter" :key="item.id" v-html="item.htmlStr"></li>
       </ul>
@@ -28,8 +29,11 @@
 <script>
 import store from "../../store";
 import directives from "../../directives";
+import iphonex from "./iphonex";
+import iphone6 from "./iphone6";
 
 export default {
+  components: { iphonex, iphone6 },
   data() {
     return {
       STATE: store.state,
@@ -97,7 +101,7 @@ export default {
   z-index: 4;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  // overflow: hidden;
   .tab {
     height: 30px;
     display: flex;
@@ -131,10 +135,10 @@ export default {
       }
     }
   }
-  .content {
-    width: 100%;
-    height: 70vh;
-    overflow-y: scroll;
+  & >.content {
+    // width: 100%;
+    // height: 70vh;
+    // overflow-y: scroll;
   }
 }
 </style>
