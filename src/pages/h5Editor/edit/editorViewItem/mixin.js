@@ -79,8 +79,8 @@ export const common = {
         if (n > -1) {
             Object.assign(this.$data, deleteItemCollection[n].componentState);
             store.commit("REMOVE_DELETE_DATA", n);
-            this.refreshPreview();
         }
+        this.refreshPreview();
     },
     watch: {
         isActive(newVal) {

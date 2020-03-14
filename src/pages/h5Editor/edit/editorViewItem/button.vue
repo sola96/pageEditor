@@ -32,7 +32,9 @@ export default {
           display: "flex",
           borderRadius: "2px",
           overflow: "hidden",
-          userSelect: "none"
+          userSelect: "none",
+          boxSizing:"border-box",
+          padding:"0 4px"
         },
         children: []
       };
@@ -84,12 +86,6 @@ export default {
         text: "按钮" + (index + 1),
         url: ""
       }));
-  },
-  mounted() {
-    this.refreshPreview();
-    // this.$refs.btnList.addEventListener("DOMSubtreeModified", e => {
-    //   this.refreshPreview()
-    // });
   }
 };
 </script>

@@ -19,8 +19,8 @@ export default {
   methods: {
     getSelfHtmlStr() {
       let obj = {
-        tag:"div",
-        text:"#富文本"
+        tag: "div",
+        text: "#富文本"
       };
       return createHtmlStr(obj);
     },

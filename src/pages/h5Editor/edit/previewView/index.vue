@@ -18,10 +18,11 @@
       </div>
     </div>
     <div class="content" v-loading="manualLoading">
-      <iphonex></iphonex>
-      <ul>
-        <li v-for="item in previewData_filter" :key="item.id" v-html="item.htmlStr"></li>
-      </ul>
+      <iphonex>
+        <ul>
+          <li v-for="item in previewData_filter" :key="item.id" v-html="item.htmlStr"></li>
+        </ul>
+      </iphonex>
     </div>
   </div>
 </template>
@@ -135,7 +136,7 @@ export default {
       }
     }
   }
-  & >.content {
+  & > .content {
     // width: 100%;
     // height: 70vh;
     // overflow-y: scroll;
