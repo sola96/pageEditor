@@ -20,7 +20,12 @@
     <div class="content" v-loading="manualLoading">
       <iphonex>
         <ul>
-          <li v-for="item in previewData_filter" :key="item.id" v-html="item.htmlStr"></li>
+          <li
+            class="component-item"
+            v-for="item in previewData_filter"
+            :key="item.id"
+            v-html="item.htmlStr"
+          ></li>
         </ul>
       </iphonex>
     </div>
@@ -31,10 +36,9 @@
 import store from "../../store";
 import directives from "../../directives";
 import iphonex from "./iphonex";
-import iphone6 from "./iphone6";
 
 export default {
-  components: { iphonex, iphone6 },
+  components: { iphonex },
   data() {
     return {
       STATE: store.state,
@@ -140,6 +144,10 @@ export default {
     // width: 100%;
     // height: 70vh;
     // overflow-y: scroll;
+    .component-item {
+      width: 100%;
+      word-break: break-all;
+    }
   }
 }
 </style>

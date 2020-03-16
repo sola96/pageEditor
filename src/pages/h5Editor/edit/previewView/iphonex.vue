@@ -5,6 +5,11 @@
       <div class="content">
         <div class="status-bar">
           <div class="time">{{time}}</div>
+          <div>
+            <div class="battery">
+              <div class="inner"></div>
+            </div>
+          </div>
         </div>
         <div class="navigation-bar">页面名称</div>
         <div class="scroll">
@@ -22,8 +27,8 @@
         </div>
       </div>
     </div>
-    <!-- <div class="btns"></div>
-    <div class="power"></div>-->
+    <div class="btns"></div>
+    <div class="power"></div>
   </div>
 </template>
 
@@ -65,7 +70,7 @@ export default {
 }
 .frame {
   background: #222;
-  border-radius: 50px;
+  border-radius: 45px;
   box-shadow: inset 0 0 0 2px #606467, inset 0 0 0 6px #e2e3e4;
   height: 590px;
   padding: 18px;
@@ -74,7 +79,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-radius: 30px;
+    border-radius: 26px;
     height: 100%;
     position: relative;
     width: 100%;
@@ -89,6 +94,30 @@ export default {
       .time {
         font-weight: bold;
         font-size: 12px;
+      }
+      .battery {
+        width: 20px;
+        height: 10px;
+        border-radius: 2px;
+        border: 1px solid #606467;
+        padding: 1px;
+        float: right;
+        position: relative;
+        &::after {
+          content: "";
+          display: block;
+          width: 2px;
+          height: 5px;
+          background-color: #606467;
+          position: absolute;
+          right: -2px;
+          top: 2px;
+        }
+        .inner {
+          width: 100%;
+          height: 100%;
+          background-color: #000;
+        }
       }
     }
     .navigation-bar {
@@ -124,7 +153,7 @@ export default {
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
     height: 18px;
-    width: 142px;
+    width: 134px;
     margin-top: -1px;
   }
 }
