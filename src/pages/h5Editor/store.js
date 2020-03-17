@@ -5,7 +5,8 @@ let toastTimer = null
 
 const store = {
     state: {
-        ownerTemplateShow: false, //“我的推广页”显示
+        ownerTemplateShow: true, //“我的推广页”显示
+        controlViewwidth: "300px",
         componentsList: [], //组件item列表
         currentActiveItemIdx: -1, //当前active状态的item索引
         currentActiveItem: { id: "" },
@@ -18,11 +19,12 @@ const store = {
          * timestamp: Date.now()
          * html:{id:"",htmlStr:""} 
          */
-        toastMsg: "",
+        toastMsg: "", //toast弹窗的内容
         idMap: {
             activityId: "",
             pageConfigId: ""
-        }
+        },
+        backupPages: {} // 当前活动下的备份的页面
     },
     mutations: {
         TOAST(state, msg) {
@@ -35,6 +37,12 @@ const store = {
         SET_ID_MAP(state, { activityId, pageConfigId }) {
             if (activityId) {
                 state.idMap.activityId = activityId;
+                //设置活动id时查询当前活动下的备份的页面
+                db.$get("activity_config", activityId, res => {
+                    if (res) {
+                        state.backupPages = res.pageConfigIds
+                    }
+                })
             }
             if (pageConfigId) {
                 state.idMap.pageConfigId = pageConfigId;
@@ -86,26 +94,10 @@ const store = {
             if (state.previewWay && state.previewWay === "auto") {
                 state.previewData = arrMoveTop(state.previewData, index);
             }
-            // if (index !== 0) {
-            //     let moveItem = state.componentsList.splice(index, 1);
-            //     state.componentsList.unshift(...moveItem);
-            //     state.currentActiveItemIdx = 0;
-            //     if (previewWay && previewWay === "auto") {
-            //         let moveItem = state.previewData.splice(index, 1);
-            //         state.previewData.unshift(...moveItem);
-            //     }
-            // }
             return 0;
         },
         //向上移动一层
         MOVE_UPPER(state, index) {
-            // let curIdx = index;
-            // let preIdx = index - 1;
-            // [state.componentsList[curIdx], state.componentsList[preIdx]] = [
-            //     state.componentsList[preIdx],
-            //     state.componentsList[curIdx]
-            // ];
-            // state.componentsList = [...state.componentsList];
             let preIdx = index > 0 ? index - 1 : index;
             state.componentsList = arrMoveUpper(state.componentsList, index);
             state.currentActiveItemIdx = preIdx;
@@ -116,17 +108,6 @@ const store = {
         },
         //向下移动一层
         MOVE_LOWER(state, index) {
-            // if (index !== state.componentsList.length - 1) {
-            //     let curIdx = index;
-            //     let nextIdx = index + 1;
-            //     [state.componentsList[curIdx], state.componentsList[nextIdx]] = [
-            //         state.componentsList[nextIdx],
-            //         state.componentsList[curIdx]
-            //     ];
-            //     state.componentsList = [...state.componentsList];
-            //     state.currentActiveItemIdx = nextIdx;
-            //     return nextIdx;
-            // }
             let len = state.componentsList.length;
             let nextIdx = index < len ? index + 1 : index;
             state.componentsList = arrMoveLower(state.componentsList, index);
@@ -171,7 +152,7 @@ const store = {
         SET_BACKUP(state, components) {
             if (!(components && components.length > 0)) return;
             let activityId = state.idMap.activityId || "default_activity"
-            let pageConfigId = state.idMap.pageConfigId || activityId + "_default_config"
+            let pageConfigId = state.idMap.pageConfigId || (activityId + "_default_config")
             db.$put("config", {
                 pageConfigId,
                 components,
@@ -180,27 +161,35 @@ const store = {
                 if (!res) {
                     res = {
                         activityId,
-                        pageConfigIds: []
+                        pageConfigIds: {}
                     }
                 }
-                if (!res.pageConfigIds.includes(pageConfigId)) {
-                    res.pageConfigIds.push(pageConfigId)
-                    db.$put("activity_config", res)
+                res.pageConfigIds[pageConfigId] = {
+                    timestamp: Date.now()
                 }
+                db.$put("activity_config", res)
+                state.backupPages = res.pageConfigIds
                 state.toastMsg = "当前编辑器数据已保存"
                 setTimeout(() => {
                     state.toastMsg = ""
                 }, 1000)
             }))
         },
-        //查询备份
-        //根据id查询备份的数据
-        SEARCH_BACKUP(state, id) {
-            db.$put()
-        }
     },
     actions: {
-
+        //查询备份
+        //根据id查询备份的数据
+        SEARCH_BACKUP(state, pageConfigId) {
+            return new Promise((resolve, reject) => {
+                db.$get("config", pageConfigId, res => {
+                    if (res) {
+                        resolve(res)
+                    } else {
+                        reject()
+                    }
+                })
+            })
+        }
     }
 }
 

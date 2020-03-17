@@ -17,6 +17,13 @@
         ></el-option>
       </el-select>
     </div>
+    <div class="detail" v-if="backupDetail">
+      <div class="backup-content" title="点击可恢复数据">
+        <div class="name">已备份</div>
+        <div class="time">上次备份时间:{{backupDetail.timestamp | getTime}}</div>
+      </div>
+    </div>
+    <div v-else class="no-backup">当前页面无备份数据</div>
   </div>
 </template>
 
@@ -49,6 +56,16 @@ export default {
       ]
     };
   },
+  computed: {
+    backupDetail() {
+      let pageConfigId = this.STATE.idMap.pageConfigId;
+      let backupPages = this.STATE.backupPages;
+      return backupPages[pageConfigId];
+    }
+  },
+  filters: {
+    getTime
+  },
   methods: {
     //保存时间间隔
     setSaveInterval(value) {
@@ -80,7 +97,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/assets/variable.scss";
+@import "~@/views/pageEditor/assets/variable.scss";
 .backup {
   font-size: 13px;
   color: $color-text;
@@ -98,6 +115,30 @@ export default {
     .input {
       flex: 1;
     }
+  }
+  .detail {
+    margin-top: 4px;
+    user-select: none;
+    .backup-content {
+      cursor: pointer;
+      padding: 4px 0;
+      color: $color-text;
+      &:hover {
+        background-color: $color-bg-1;
+        color: $color-theme;
+      }
+      .name {
+        margin-top: 6px;
+        font-weight: bold;
+      }
+      .timestamp {
+        color: $color-text-l;
+      }
+    }
+  }
+  .no-backup {
+    margin-top: 10px;
+    color: #aaa;
   }
 }
 </style>
