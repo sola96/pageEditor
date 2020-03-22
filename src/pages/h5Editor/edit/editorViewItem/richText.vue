@@ -48,7 +48,6 @@ export default {
     ];
     this.editorInstance.customConfig.onchange = html => {
       this.htmlStr = html;
-      this.refreshPreview();
     };
     this.editorInstance.create();
   }

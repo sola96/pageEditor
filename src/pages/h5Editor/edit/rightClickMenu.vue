@@ -19,42 +19,6 @@ export default {
   data() {
     return {
       menuList: [
-        // {
-        //   label: "编辑",
-        //   command: "edit",
-        //   value: "",
-        //   custom: false,
-        //   style:{
-        //     "border-top":"1px solid #EBEEF5"
-        //   }
-        // },
-        {
-          label: "置于顶层",
-          command: "move",
-          value: "top",
-          custom: false,
-          style: {
-            "border-top": "1px solid #EBEEF5"
-          }
-        },
-        {
-          label: "上移一层",
-          command: "move",
-          value: "-1",
-          custom: false
-        },
-        {
-          label: "下移一层",
-          command: "move",
-          value: "+1",
-          custom: false
-        },
-        {
-          label: "置于底层",
-          command: "move",
-          value: "bottom",
-          custom: false
-        },
         {
           label: "删除",
           command: "delete",

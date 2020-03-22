@@ -48,7 +48,6 @@ export default {
       // file.length > 0 && Object.assign(this.$data, this.$options.data());
       reader.onload = () => {
         this.src = reader.result;
-        this.refreshPreview();
       };
       if (imgData && (imgData = imgData[0])) {
         if (!/image/.test(imgData.type)) {
@@ -143,10 +142,6 @@ export default {
         }
       };
       return createHtmlStr(nodeObj);
-    },
-    //渲染,父组件会派发component:render事件，该render函数为component:render事件的回调
-    render(previewData) {
-      previewData[this.index] = this.getSelfHtmlStr();
     }
   },
 

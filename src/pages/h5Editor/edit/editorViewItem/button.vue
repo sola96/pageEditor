@@ -65,9 +65,6 @@ export default {
         },
         set btns(value) {
           _this.btns = value;
-        },
-        get refreshPreview() {
-          return _this.refreshPreview;
         }
       };
       this.$emit("setControlData", { type: this.itemData.type, data });
