@@ -59,17 +59,6 @@ export default {
         }
       };
       return createHtmlStr(nodeObj);
-    },
-    blur() {
-      if (this.STATE.previewWay && this.STATE.previewWay === "auto") {
-        store.commit("SET_PREVIEW_DATA", {
-          index: this.index,
-          data: this.getSelfHtmlStr()
-        });
-      }
-    },
-    render(previewData) {
-      previewData[this.index] = this.getSelfHtmlStr();
     }
   }
 };

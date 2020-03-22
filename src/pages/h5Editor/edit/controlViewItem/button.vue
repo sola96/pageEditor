@@ -16,7 +16,6 @@
             label="按钮文本"
             v-model="item.text"
             placeholder="请输入"
-            @blur="in_data.refreshPreview"
           ></el-input>
         </div>
         <div class="setting">
@@ -25,14 +24,12 @@
             class="input"
             size="small"
             v-model="item.style.color"
-            @change="in_data.refreshPreview"
           ></el-color-picker>
           <div class="label">字体大小</div>
           <el-select
             class="input"
             size="mini"
             v-model="item.style.fontSize"
-            @change="in_data.refreshPreview"
           >
             <el-option
               v-for="item in fontSize"
@@ -48,14 +45,12 @@
             class="input"
             size="small"
             v-model="item.style.backgroundColor"
-            @change="in_data.refreshPreview"
           ></el-color-picker>
           <div class="label">对齐方式</div>
           <el-select
             class="input"
             size="mini"
             v-model="item.style.textAlign"
-            @change="in_data.refreshPreview"
           >
             <el-option
               v-for="item in textAlign"

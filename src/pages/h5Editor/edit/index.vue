@@ -21,16 +21,7 @@
     </div>
     <!-- 扩展控制 控制扩展视图的显示隐藏以及其他一些设置项-->
     <div class="extend-control-bar">
-      <extend-control-bar :extendView.sync="extendView" @backup="backup"></extend-control-bar>
-    </div>
-    <!-- 以下为扩展视图 -->
-    <!--排序面板：组件排序视图 -->
-    <div class="extend component-sort-view" v-if="extendView.componentSortView">
-      <component-sort-view @refreshPreview="refreshPreview"></component-sort-view>
-    </div>
-    <!-- 预览视图 -->
-    <div class="extend preview-view" v-if="extendView.previewView">
-      <preview-view @refreshPreview="refreshPreview"></preview-view>
+      <extend-control-bar @backup="backup"></extend-control-bar>
     </div>
     <div class="toast" v-show="STATE.toastMsg">{{STATE.toastMsg}}</div>
   </div>
@@ -43,7 +34,6 @@ import controlPicture from "./controlViewItem/picture";
 import controlButton from "./controlViewItem/button";
 import extendControlBar from "./extendControlBar";
 import componentSortView from "./componentSortView/index";
-import previewView from "./previewView/index";
 import store from "../store";
 import { getRandomStr } from "../utils";
 
@@ -54,20 +44,14 @@ export default {
     controlPicture,
     controlButton,
     extendControlBar,
-    componentSortView,
-    previewView
+    componentSortView
   },
   data() {
     return {
       STATE: store.state, //state
       currentControlType: "", //当前打开的控制视图
       currentControlData: {}, //当前控制视图的数据
-      itemCount: 1, //组件计数，添加默认的组件label用，是全局中出现的组件item的数量
-      extendView: {
-        //当前打开的扩展视图
-        componentSortView: false, //排序窗口
-        previewView: false //预览视图
-      }
+      itemCount: 1 //组件计数，添加默认的组件label用，是全局中出现的组件item的数量
     };
   },
   methods: {
@@ -132,21 +116,9 @@ export default {
         handler(data);
       }
     },
-    //刷新预览视图
-    refreshPreview() {
-      this.$refs.editorView.getPreviewData();
-    },
     backup() {
       this.$refs.editorView.backup();
     }
-  },
-  created() {
-    store.commit("SET_ID_MAP", {
-      activityId: "test1",
-      pageConfigId: "ajskbdkqjww1"
-      // activityId: this.$route.query.activityId,
-      // pageConfigId: this.$route.query.pageConfigId
-    });
   }
 };
 </script>

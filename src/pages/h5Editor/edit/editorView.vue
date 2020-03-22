@@ -97,7 +97,6 @@ export default {
         itemData: delItem[0],
         timestamp: Date.now()
       });
-      console.log(html);
       //删除组件的同时要删除该组件之前注册的菜单选项
       if (this.rightClickMenuData.additionMenu[delItem.id]) {
         delete this.rightClickMenuData.additionMenu[delItem.id];
@@ -164,30 +163,6 @@ export default {
       let currentActiveItemIdx = this.STATE.currentActiveItemIdx;
       if (command === "delete") {
         this.deleteItem(currentActiveItemIdx);
-      } else if (command === "move") {
-        let componentsList = [...this.STATE.componentsList];
-        if (value === "top" && currentActiveItemIdx !== 0) {
-          //置于顶层
-          store.commit("MOVE_TOP", currentActiveItemIdx);
-        }
-        if (value === "-1" && currentActiveItemIdx !== 0) {
-          //上移一蹭
-          store.commit("MOVE_UPPER", currentActiveItemIdx);
-        }
-        if (
-          value === "+1" &&
-          currentActiveItemIdx !== componentsList.length - 1
-        ) {
-          //下移一层
-          store.commit("MOVE_LOWER", currentActiveItemIdx);
-        }
-        if (
-          value === "bottom" &&
-          currentActiveItemIdx !== componentsList.length - 1
-        ) {
-          //置于底层
-          store.commit("MOVE_BOTTOM", currentActiveItemIdx);
-        }
       }
       this.closeRightClickMenu();
     },
@@ -198,17 +173,6 @@ export default {
         commandFn(data);
       }
       this.closeRightClickMenu();
-    },
-    //获取预览视图的数据
-    //该方法由父组件调用
-    //在“手动刷新” 或 在排序窗口操作后会调用该方法
-    //该方法会重新生成previewData，数据量大的情况下比较消耗性能
-    getPreviewData() {
-      let previewData = Array(this.STATE.componentsList.length).fill(null);
-      this.STATE.componentsList.forEach(item => {
-        this.$refs[item.id][0].render(previewData);
-      });
-      store.commit("REPALCE_PREVIEW_DATA", previewData);
     },
     //备份
     //该方法由父组件调用

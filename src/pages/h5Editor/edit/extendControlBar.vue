@@ -11,28 +11,19 @@
         <i class="el-icon-upload"></i>
         <span>保存</span>
       </li>
-      <li class="backup" v-popover:componentBackup>
+      <!-- <li class="backup" v-popover:componentBackup>
         <i class="el-icon-document"></i>
         <span>备份</span>
         <el-popover ref="componentBackup" placement="bottom" width="300" trigger="click">
           <component-backup v-on="$listeners"></component-backup>
         </el-popover>
-      </li>
+      </li> -->
       <li v-popover:componentsRecycle>
         <i class="el-icon-delete"></i>
         <span>组件回收站</span>
         <el-popover ref="componentsRecycle" placement="bottom" width="300" trigger="click">
           <components-recycle></components-recycle>
         </el-popover>
-      </li>
-      <li
-        v-for="item in items"
-        :key="item.value"
-        :class="{active:extendView[item.value]}"
-        @click="setView(item.value)"
-      >
-        <i :class="item.icon"></i>
-        <span>{{item.name}}</span>
       </li>
     </ul>
   </div>
@@ -44,30 +35,9 @@ import componentBackup from "./backup/backup";
 export default {
   components: { componentsRecycle, componentBackup },
   data() {
-    return {
-      items: [
-        {
-          name: "预览视图",
-          icon: "el-icon-mobile-phone",
-          value: "previewView"
-        },
-        {
-          name: "排序视图",
-          icon: "el-icon-sort",
-          value: "componentSortView"
-        }
-      ]
-    };
+    return {};
   },
-  props: ["extendView"],
-  methods: {
-    setView(value) {
-      this.$emit(
-        "update:extendView",
-        Object.assign({}, this.extendView, { [value]: !this.extendView[value] })
-      );
-    }
-  }
+  methods: {}
 };
 </script>
 

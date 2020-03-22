@@ -46,18 +46,6 @@ export const common = {
             console.error(`<${this.itemData.type}>组件缺少getSelfHtmlStr函数，需要实现一个 'getSelfHtmlStr' 函数`);
             return null;
         },
-        refreshPreview() {
-            if (this.STATE.previewWay && this.STATE.previewWay === "auto") {
-                store.commit("SET_PREVIEW_DATA", {
-                    index: this.index,
-                    data: this.getSelfHtmlStr()
-                });
-            }
-        },
-        //渲染当前组件
-        render(previewData) {
-            previewData[this.index] = this.getSelfHtmlStr();
-        },
         //提交
         submit() {
             console.error(`<${this.itemData.type}>组件缺少submit函数，需要实现一个 'submit' 函数`);
@@ -80,7 +68,6 @@ export const common = {
             Object.assign(this.$data, deleteItemCollection[n].componentState);
             store.commit("REMOVE_DELETE_DATA", n);
         }
-        this.refreshPreview(); 
     },
     watch: {
         isActive(newVal) {
