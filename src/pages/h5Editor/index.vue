@@ -15,23 +15,26 @@
       </div>
     </div>
     <div class="editor-content">
-      <component-edit ref="edit"></component-edit>
+      <component-edit ref="edit" v-if="current==='edit'"></component-edit>
+      <component-push ref="push" v-if="current==='push'"></component-push>
     </div>
   </div>
 </template>
 
 <script>
 import componentEdit from "./edit/index";
+import componentPush from "./push/index";
 import addComponents from "./tab/addComponents/addComponents";
 import directives from "./directives";
 export default {
   components: {
     componentEdit,
-    addComponents
+    addComponents,
+    componentPush
   },
   data() {
     return {
-      current: "edit", //当前
+      current: "push", //当前
       fullScreen: false //是否全屏
     };
   },
