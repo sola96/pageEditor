@@ -227,3 +227,39 @@ export function getUID() {
     });
     return uuid;
 }
+
+export function domToImg(dom, options = {}) {
+    return new Promise((resolve, reject) => {
+        let baseOptions = {
+            width: 0,
+            height: 0,
+            scale: 2
+        }
+        options = Object.assign({}, baseOptions, options)
+        let { width, height, scale } = options
+        try {
+            document.body.appendChild(dom);
+            html2canvas(dom, {
+                width: width * scale,
+                height: height * scale
+            })
+                .then(canvas => {
+                    let url = canvas.toDataURL();
+                    let _img = document.createElement("img");
+                    _img.width = width;
+                    _img.height = height;
+                    _img.src = url;
+                    document.body.removeChild(dom);
+                    resolve(_img)
+                })
+                .catch(err => {
+                    console.log(err)
+                    document.body.removeChild(dom);
+                    reject()
+                })
+        } catch (e) {
+            console.log(e)
+            reject()
+        }
+    })
+}

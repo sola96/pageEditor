@@ -33,7 +33,6 @@ import editorView from "./editorView";
 import controlPicture from "./controlViewItem/picture";
 import controlButton from "./controlViewItem/button";
 import extendControlBar from "./extendControlBar";
-import componentSortView from "./componentSortView/index";
 import store from "../store";
 import { getRandomStr } from "../utils";
 
@@ -43,8 +42,7 @@ export default {
     editorView,
     controlPicture,
     controlButton,
-    extendControlBar,
-    componentSortView
+    extendControlBar
   },
   data() {
     return {

@@ -97,7 +97,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/views/pageEditor/assets/variable.scss";
+@import "~@/assets/variable.scss";
 .backup {
   font-size: 13px;
   color: $color-text;
